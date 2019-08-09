@@ -19,7 +19,8 @@ var Colors = {
 	pink: 0xF5986E,
 	brownDark: 0x23190f,
 	blue: 0x68c3c0,
-	black: 0x333333,
+	ligherBlack: 0x404040,
+	black: 0x000000,
 	gray: 0xD3D3D3
 };
 
@@ -106,6 +107,7 @@ function removeShield(){
 }
 
 function disableShieldImmunity(){
+	if (!game.hasShield) return;
 	game.hasShield = false;
 	game.shieldCooldown = 10000;
 }
@@ -127,6 +129,35 @@ function handleShieldFade(deltaTime){
 }
 
 function init() {
+	initUI();
+	resetGame();
+	createScene();
+	createLights();
+	createPlane(vehicleType);
+	createTerrain();
+	createSky();
+	fillParticlesPool();
+	createCoins();
+	setupPlayerInputListener();
+	loop();
+}
+
+function setupPlayerInputListener(){
+	document.addEventListener('mousemove', handleMouseMove, false);
+	document.addEventListener('mouseup', function(){
+		if (game.showReplay) {
+			resetGame();
+			createPlane(vehicleType);
+		}
+	}, false)
+	document.addEventListener('keyup', (e) => {
+		if (e.which == 32) {
+			if (!game.hasShield) addShield(); 
+			else disableShieldImmunity();
+		}
+	  });
+}
+function initUI(){
 	gui = new dat.GUI();
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3:2, TARDIS: 3 });
 	gui.add(options, 'difficulty', 0, 10);
@@ -144,36 +175,20 @@ function init() {
 		}
 	});
 	gui.add(options, 'reset');
-	resetGame();
-	createScene();
-	createLights();
-	createPlane(vehicleType);
-	createTerrain();
-	createSky();
-	fillParticlesPool();
-	createCoins();
-	document.addEventListener('mousemove', handleMouseMove, false);
-	document.addEventListener('keyup', (e) => {
-		if (e.which == 32) {
-			if (!game.hasShield) addShield(); 
-			else disableShieldImmunity();
-		}
-	  });
-	loop();
-}
-
-function resetGame(){
 	scoreboard = {
 		level : document.getElementById('levelValue'),
 		distance : document.getElementById('distValue'),
 		energy : document.getElementById('energyBar'),
-		shield : document.getElementById('shieldValue')
+		shield : document.getElementById('shieldValue'),
+		replay : document.getElementById('replayMessage')
 	}
+}
+function resetGame(){
 	if (game == undefined) {
 		game = {};
 	}
 	game.hasShield = false;
-	game.energyDecayPerFrame = 0.0015;
+	game.energyDecayPerFrame = 0.0515;
 	game.level = 1;
 	game.energy = 100;
 	game.firstLoop= true;
@@ -198,6 +213,9 @@ function resetGame(){
 	game.shieldActivationCost = 0.33;
 	game.shieldActiveCost = 0.0015;
 	game.shieldCooldown = 0;
+	game.gameOver = false;
+	game.gameOverVehicleSpeed = .002;
+	game.showReplay = false;
 	scoreboard.level.innerHTML = 1;
 	scoreboard.distance.innerHTML == 0;
 	scoreboard.energy.style.right = (100-game.energy)+"%";
@@ -220,6 +238,7 @@ function handleMouseMove(event) {
 
 
 function updatePlane() {
+	if (game.gameOver) return;
 	var targetY = normalize(mousePos.y, -.75, .75, 75, 250);
 	var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
 	// Move the plane at each frame by adding a fraction of the remaining distance
@@ -365,10 +384,17 @@ function handleSmoke(){
 	var speedFactor = 15000 * game.baseSpeed;
 	var intervalSmoke = 140 - speedFactor;
 	if (intervalSmoke < 100) intervalSmoke = 100;
-	if (typeof(game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke) {
+	if (typeof(game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke && !game.gameOver) {
 		var vehPos = game.vehicle.position.clone();
 		vehPos.x -= 10;
-		particlesHolder.spawnParticles(true, speedFactor, vehPos, 5, Colors.black, .8);
+		particlesHolder.spawnParticles(true, speedFactor, vehPos, 5, Colors.ligherBlack, .8);
+		game.vehicle.position.clone();
+		game.lastSmokeSpawn = newTime;
+	}
+	else if (game.gameOver && typeof(game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke/2 ) {
+		var vehPos = game.vehicle.position.clone();
+		vehPos.x -= 10;
+		particlesHolder.spawnParticles(true, speedFactor, vehPos, 5, Colors.black, 1.1);
 		game.vehicle.position.clone();
 		game.lastSmokeSpawn = newTime;
 	}
@@ -381,21 +407,55 @@ function updateUI(){
 	if (game.hasShield) scoreboard.shield.innerHTML = "Active"
 	else if (game.shieldCooldown == 0) scoreboard.shield.innerHTML = "Ready"
 	else scoreboard.shield.innerHTML = (Math.round(game.shieldCooldown/100) / 10).valueOf() + "s";
+	if (game.showReplay) scoreboard.replay.style.display="block";
+	else  scoreboard.replay.style.display="none";
 }
 
-function handleRotationSpeed(deltaTime){
+
+function handleRotation(deltaTime){
 	terrain.mesh.rotation.z += game.baseSpeed*game.deltaTime;
 	if ( terrain.mesh.rotation.z > 2*Math.PI)  terrain.mesh.rotation.z -= 2*Math.PI;
 	if (ambientLight.intensity < 1.0) ambientLight.intensity += (.5 - ambientLight.intensity)*deltaTime*0.005;
 	else ambientLight.intensity = 1.0;
+}
+
+function handleSpeed(deltaTime){
+	if (game.gameOver) return;
 	game.distance += game.baseSpeed*game.deltaTime;
 	game.distanceSinceStartLevel += game.baseSpeed*game.deltaTime;
 	game.baseSpeed += (game.targetBaseSpeed - game.baseSpeed) * deltaTime * 0.02;
+}
+
+function handleEnergy(deltaTime){
 	var energyMinus = game.energyDecayPerFrame * deltaTime;
 	if (game.level>1) energyMinus = energyMinus * (game.level/3)
 	if (game.hasShield)  energyMinus = energyMinus + game.shieldActiveCost;
 	game.energy = game.energy - energyMinus;
+	if (game.energy <= 0) game.gameOver = true;
 }
+
+function handleGameStatus(deltaTime) {
+	if (game.gameOver) {
+		disableShieldImmunity();
+		game.vehicle.rotation.z += (-Math.PI/2 - game.vehicle.rotation.z)*.0012*deltaTime;
+		game.vehicle.rotation.x += 0.0003*deltaTime;
+		game.gameOverVehicleSpeed *= 1.05;
+		game.vehicle.position.y -= game.gameOverVehicleSpeed*deltaTime;
+		game.vehicle.position.x += game.gameOverVehicleSpeed*deltaTime;
+		game.gameOverVehicleSpeed *= 1.01;
+		game.baseSpeed *=0.99;
+		if (!game.showReplay) {
+			var diffPos = game.vehicle.position.clone().sub(terrain.mesh.position);
+			  var d = diffPos.length();
+			  if (d<630 || d > 2000) {
+				game.showReplay = true;
+				particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.red, 2);  
+				scene.remove(airplane);
+			  }
+		}
+	}
+}
+
 
 function loop() {
 	newTime = new Date().getTime();
@@ -406,24 +466,27 @@ function loop() {
 		requestAnimationFrame(loop);
 		return;
 	}
-	if (game.distanceSinceStartLevel > (game.levelDistance + 5*game.level)) {
-		game.distanceSinceStartLevel = 0;
-		game.level = game.level + 1;
-		game.speedLastUpdate = Math.floor(game.distance);
-		game.baseSpeed = 0;
-		game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement*game.level;
-	}
 
-	if ((game.firstLoop && game.vehicle != undefined)  || (Math.floor(game.distance)%game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn)){
-		game.coinLastSpawn = Math.floor(game.distance);
-		coinsHolder.spawnCoins();
-		game.firstLoop = false;
-	  }
-	  
-	if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
-		game.speedLastUpdate = Math.floor(game.distance);
-		game.targetBaseSpeed += game.speedIncrement*deltaTime;
-	  }
+	if (!game.gameOver) {
+		if (game.distanceSinceStartLevel > (game.levelDistance + 5*game.level)) {
+			game.distanceSinceStartLevel = 0;
+			game.level = game.level + 1;
+			game.speedLastUpdate = Math.floor(game.distance);
+			game.baseSpeed = 0;
+			game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement*game.level;
+		}
+	
+		if ((game.firstLoop && game.vehicle != undefined)  || (Math.floor(game.distance)%game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn)){
+			game.coinLastSpawn = Math.floor(game.distance);
+			coinsHolder.spawnCoins();
+			game.firstLoop = false;
+		  }
+		  
+		if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
+			game.speedLastUpdate = Math.floor(game.distance);
+			game.targetBaseSpeed += game.speedIncrement*deltaTime;
+		  }
+	}
 	
 	if (airplane != undefined) {
 		updatePlane();
@@ -437,9 +500,12 @@ function loop() {
 		createPlane(vehicleType);
 	}
 
-	handleRotationSpeed(deltaTime);
+	handleRotation(deltaTime);
+	handleSpeed(deltaTime);
+	handleEnergy(deltaTime);
 	handleShieldFade(deltaTime);
 	handleSmoke();
+	handleGameStatus(deltaTime);
 	sky.moveClouds();
 	coinsHolder.rotateCoins();
 	updateUI();
