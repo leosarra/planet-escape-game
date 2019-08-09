@@ -197,7 +197,7 @@ function resetGame(){
 		game = {};
 	}
 	game.hasShield = false;
-	game.energyDecayPerFrame = 0.0515;
+	game.energyDecayPerFrame = 0.0015;
 	game.level = 1;
 	game.energy = 100;
 	game.firstLoop= true;
