@@ -154,6 +154,12 @@ function setupPlayerInputListener(){
 		if (e.which == 32) {
 			if (!game.hasShield) addShield(); 
 			else disableShieldImmunity();
+		} else if (e.which == 83 && game.showReplay) {
+			var name = window.prompt("Enter your name");
+			if (name === "") alert("Name can't be left empty");
+			addScore(name,Math.floor(game.distance * 40));
+			game.scoreAdded = true;
+			printScoreboard(scoreboard.scoreboard);
 		}
 	  });
 }
@@ -180,7 +186,10 @@ function initUI(){
 		distance : document.getElementById('distValue'),
 		energy : document.getElementById('energyBar'),
 		shield : document.getElementById('shieldValue'),
-		replay : document.getElementById('replayMessage')
+		replay : document.getElementById('replayMessage'),
+		scoreMessage : document.getElementById('scoreboardMessage'),
+		scoreboard : document.getElementById('scoreboard'),
+		scoreboard_header : document.getElementById('scoreboard_header'),
 	}
 }
 function resetGame(){
@@ -216,6 +225,7 @@ function resetGame(){
 	game.gameOver = false;
 	game.gameOverVehicleSpeed = .002;
 	game.showReplay = false;
+	game.scoreAdded =false;
 	scoreboard.level.innerHTML = 1;
 	scoreboard.distance.innerHTML == 0;
 	scoreboard.energy.style.right = (100-game.energy)+"%";
@@ -407,8 +417,20 @@ function updateUI(){
 	if (game.hasShield) scoreboard.shield.innerHTML = "Active"
 	else if (game.shieldCooldown == 0) scoreboard.shield.innerHTML = "Ready"
 	else scoreboard.shield.innerHTML = (Math.round(game.shieldCooldown/100) / 10).valueOf() + "s";
-	if (game.showReplay) scoreboard.replay.style.display="block";
-	else  scoreboard.replay.style.display="none";
+	if (game.showReplay) {
+		scoreboard.replay.style.display="block";
+		scoreboard.scoreboard_header.style.display="block";
+		scoreboard.scoreboard.style.display="block";
+		if (!game.scoreAdded) scoreboard.scoreMessage.style.display="block";
+	}
+	else  {
+		scoreboard.replay.style.display="none";
+		scoreboard.scoreMessage.style.display="none";
+		scoreboard.scoreboard_header.style.display="none";
+		scoreboard.scoreboard.style.display="none";
+	}
+	if (game.showReplay && game.scoreAdded) scoreboard.scoreMessage.style.display="none";
+
 }
 
 
@@ -447,8 +469,9 @@ function handleGameStatus(deltaTime) {
 		if (!game.showReplay) {
 			var diffPos = game.vehicle.position.clone().sub(terrain.mesh.position);
 			  var d = diffPos.length();
-			  if (d<630 || d > 2000) {
+			  if ((d<630 || d > 2000) && !game.showReplay) {
 				game.showReplay = true;
+				printScoreboard(scoreboard.scoreboard);
 				particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.red, 2);  
 				scene.remove(airplane);
 			  }
