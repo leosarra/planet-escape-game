@@ -6,9 +6,9 @@ var hemisphereLight, shadowLight;
 var terrain, sky, airplane;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
-var coinsHolder;
+var coinsHolder, enemiesHolder;
 var particlesHolder;
-
+var stats;
 var game, scoreboard;
 var paused = false;
 var Colors = {
@@ -39,7 +39,7 @@ var options = {
 	reset: function() {
 		removeShield();
 		resetGame();
-		if (airplane != undefined) scene.remove(airplane);
+		if (typeof(airplane)!='undefined') scene.remove(airplane);
 		createPlane(vehicleType);
 	  }
 	};
@@ -138,6 +138,7 @@ function init() {
 	createSky();
 	fillParticlesPool();
 	createCoins();
+	createEnemies();
 	setupPlayerInputListener();
 	loop();
 }
@@ -164,7 +165,9 @@ function setupPlayerInputListener(){
 	  });
 }
 function initUI(){
+	stats = new Stats();
 	gui = new dat.GUI();
+	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3:2, TARDIS: 3 });
 	gui.add(options, 'difficulty', 0, 10);
 	gui.add(options, 'paused');
@@ -181,6 +184,19 @@ function initUI(){
 		}
 	});
 	gui.add(options, 'reset');
+	
+	var perfFolder = gui.addFolder("Performance");
+	var perfLi = document.createElement("li");
+	stats.domElement.height = '48px';
+	stats.domElement.style.position = "static";
+	perfLi.appendChild(stats.dom);
+	perfLi.classList.add("gui-stats");
+	perfFolder.__ul.appendChild(perfLi);
+	perfFolder.domElement.getElementsByClassName("title")[0].addEventListener("click", function(){
+		if (perfLi.style.height != "auto") perfLi.style.height = "auto";
+		else perfLi.style.height = "";
+	});
+
 	scoreboard = {
 		level : document.getElementById('levelValue'),
 		distance : document.getElementById('distValue'),
@@ -316,6 +332,15 @@ function createCoins(){
 	scene.add(coinsHolder.mesh)
   }
 
+function createEnemies(){
+	for (var i=0; i<10; i++){
+		var ennemy = new Enemy();
+		this.data.enemiesPool.push(ennemy);
+	  }
+	enemiesHolder = new EnemiesHolder(game,data, particlesHolder);
+	scene.add(enemiesHolder.mesh)
+  }
+
 function handleWindowResize() {
 	HEIGHT = window.innerHeight;
 	WIDTH = window.innerWidth;
@@ -401,7 +426,7 @@ function handleSmoke(){
 		game.vehicle.position.clone();
 		game.lastSmokeSpawn = newTime;
 	}
-	else if (game.gameOver && typeof(game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke/2 ) {
+	else if (game.gameOver && typeof(game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke/2 && !game.showReplay) {
 		var vehPos = game.vehicle.position.clone();
 		vehPos.x -= 10;
 		particlesHolder.spawnParticles(true, speedFactor, vehPos, 5, Colors.black, 1.1);
@@ -466,6 +491,7 @@ function handleGameStatus(deltaTime) {
 		game.vehicle.position.x += game.gameOverVehicleSpeed*deltaTime;
 		game.gameOverVehicleSpeed *= 1.01;
 		game.baseSpeed *=0.99;
+		if (game.baseSpeed<0) game.baseSpeed = 0;
 		if (!game.showReplay) {
 			var diffPos = game.vehicle.position.clone().sub(terrain.mesh.position);
 			  var d = diffPos.length();
@@ -481,6 +507,7 @@ function handleGameStatus(deltaTime) {
 
 
 function loop() {
+	stats.begin();
 	newTime = new Date().getTime();
 	deltaTime = newTime-oldTime;
 	game.deltaTime = deltaTime;
@@ -502,6 +529,7 @@ function loop() {
 		if ((game.firstLoop && game.vehicle != undefined)  || (Math.floor(game.distance)%game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn)){
 			game.coinLastSpawn = Math.floor(game.distance);
 			coinsHolder.spawnCoins();
+			enemiesHolder.spawnEnemies();
 			game.firstLoop = false;
 		  }
 		  
@@ -531,7 +559,9 @@ function loop() {
 	handleGameStatus(deltaTime);
 	sky.moveClouds();
 	coinsHolder.rotateCoins();
+	enemiesHolder.rotateEnemies();
 	updateUI();
 	renderer.render(scene, camera);
+	stats.end();
 	requestAnimationFrame(loop);
 }
