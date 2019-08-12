@@ -1,5 +1,5 @@
 Coin = function(){
-	var geom = new THREE.TetrahedronGeometry(5,0);
+	var geom = new THREE.OctahedronGeometry(5,0);
 	var mat = new THREE.MeshPhongMaterial({
 	  color:0x009999,
 	  shininess:0,
