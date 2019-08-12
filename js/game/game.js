@@ -224,8 +224,10 @@ function resetGame(){
 	game.speedIncrement = .000004;
 	game.levelSpeedIncrement = .000040;
 	game.coinLastSpawn=0;
+	game.enemiesLastSpawn=0;
 	game.speedLastUpdate= 0;
 	game.distanceForCoinsSpawn=2;
+	game.distanceForEnemiesSpawn=2;
 	game.distanceForSpeedUpdate=2;
 	game.distance = 0;
 	game.speed = 0;
@@ -529,8 +531,11 @@ function loop() {
 		if ((game.firstLoop && game.vehicle != undefined)  || (Math.floor(game.distance)%game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn)){
 			game.coinLastSpawn = Math.floor(game.distance);
 			coinsHolder.spawnCoins();
+		}
+
+		if ((game.firstLoop && game.vehicle != undefined)  || (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemiesLastSpawn)){
+			game.enemiesLastSpawn = Math.floor(game.distance);
 			enemiesHolder.spawnEnemies();
-			game.firstLoop = false;
 		  }
 		  
 		if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
@@ -563,5 +568,6 @@ function loop() {
 	updateUI();
 	renderer.render(scene, camera);
 	stats.end();
+	game.firstLoop = false;
 	requestAnimationFrame(loop);
 }
