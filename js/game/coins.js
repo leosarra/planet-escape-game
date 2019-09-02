@@ -5,7 +5,7 @@ Coin = function(){
 	  shininess:0,
 	  specular:0xffffff,
   
-	  flatShading:THREE.FlatShading
+	  flatShading:true
 	});
 	this.mesh = new THREE.Mesh(geom,mat);
 	this.mesh.castShadow = true;
@@ -57,8 +57,8 @@ Coin = function(){
 	  if (coin.angle>Math.PI*2) coin.angle -= Math.PI*2;
 	  coin.mesh.position.y = -700 + Math.sin(coin.angle)*coin.distance;
 	  coin.mesh.position.x = Math.cos(coin.angle)*coin.distance;
-	  coin.mesh.rotation.z += Math.random()*.1;
-	  coin.mesh.rotation.y += Math.random()*.1;
+	  coin.mesh.rotation.z += Math.random()*.005*game.deltaTime;
+	  coin.mesh.rotation.y += Math.random()*.005*game.deltaTime;
       if (this.game.vehicle == undefined) return;
 
 	  var diffPos = this.game.vehicle.position.clone().sub(coin.mesh.position.clone());
