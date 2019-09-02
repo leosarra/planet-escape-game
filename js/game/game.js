@@ -3,7 +3,7 @@ var gui;
 var audio, audioListener, scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH, renderer, container;
 var vehicleType = 0;
 var hemisphereLight, shadowLight;
-var terrain, sky, airplane;
+var terrain, sky;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
 var coinsHolder, enemiesHolder;
@@ -39,8 +39,8 @@ var options = {
 	reset: function() {
 		removeShield();
 		resetGame();
-		if (typeof(airplane)!='undefined') scene.remove(airplane);
-		createPlane(vehicleType);
+		if (typeof(game.vehicle)!='undefined') scene.remove(game.vehicle);
+		createVehicle(vehicleType);
 	  }
 	};
 
@@ -133,7 +133,7 @@ function init() {
 	resetGame();
 	createScene();
 	createLights();
-	createPlane(vehicleType);
+	createVehicle(vehicleType);
 	createTerrain();
 	createSky();
 	fillParticlesPool();
@@ -148,7 +148,7 @@ function setupPlayerInputListener(){
 	document.addEventListener('mouseup', function(){
 		if (game.showReplay) {
 			resetGame();
-			createPlane(vehicleType);
+			createVehicle(vehicleType);
 		}
 	}, false)
 	document.addEventListener('keyup', (e) => {
@@ -266,15 +266,13 @@ function handleMouseMove(event) {
 
 
 function updatePlane() {
-	if (game.gameOver) return;
+	if (game.gameOver || game.vehicle == undefined) return;
 	var targetY = normalize(mousePos.y, -.75, .75, 75, 250);
 	var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
-	// Move the plane at each frame by adding a fraction of the remaining distance
-	airplane.position.y += (targetY - airplane.position.y) * 0.005 * deltaTime;
-	airplane.position.x += (targetX - airplane.position.x) * 0.005 * deltaTime;
-	// Rotate the plane proportionally to the remaining distance
-	airplane.rotation.z = (targetY - airplane.position.y) * 0.0008 * deltaTime;
-	airplane.rotation.x = (airplane.position.y - targetY) * 0.0004 * deltaTime;
+	game.vehicle.position.y += (targetY - game.vehicle.position.y) * 0.005 * deltaTime;
+	game.vehicle.position.x += (targetX - game.vehicle.position.x) * 0.005 * deltaTime;
+	game.vehicle.rotation.z = (targetY - game.vehicle.position.y) * 0.0008 * deltaTime;
+	if (vehicleType != 3) game.vehicle.rotation.x = (game.vehicle.position.y - targetY) * 0.0004 * deltaTime;
 	if (typeof(game.bubble)!='undefined'){
 		game.bubble.position.y = game.vehicle.position.y;
 		game.bubble.position.x = game.vehicle.position.x;
@@ -363,45 +361,69 @@ function createSky() {
 	scene.add(sky.mesh);
 }
 
-function createPlane(vehicleType) {
+function createVehicle(vehicleType) {
 	var file = null;
 	if (vehicleType == 0) file = "spaceship1";
 	else if (vehicleType == 1) file = "spaceship2";
 	else if (vehicleType == 2) file = "spaceship3";
 	else if (vehicleType == 3) file = "spaceship4";
-	var mtlLoader = new THREE.MTLLoader()
-	mtlLoader.load('models/' + file + '.mtl', function (materials) {
-		materials.preload();
-		var loader = new THREE.OBJLoader();
-		loader.setMaterials(materials);
-		loader.load(
-			'models/' + file + '.obj',
-			function (object) {
-				airplane = object;
-				scene.add(object);
-				lock = false;
-				if (vehicleType ==1) airplane.scale.set(.04, .05, .04);
-				else airplane.scale.set(.04, .05, .03);
-				airplane.position.y = 150;
-				airplane.rotation.y = 1.5;
-				airplane.traverse( function ( child ) {
-					if ( child instanceof THREE.Mesh ) {
-						child.castShadow = true;
-					}
-				} );
-				airplane.castShadow = true;
-				scene.add(airplane);
-				game.vehicle = airplane;
-				console.log("added");
-			},
-			function (xhr) {
-				console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-			},
-			function (error) {
-				console.log('An error happened');
-			}
-		);
-	});
+	if (vehicleType == 3) {
+		var mtlLoader = new THREE.MTLLoader();
+		mtlLoader.load('models/' + file + '.mtl', function (materials) {
+			materials.preload();
+			var loader = new THREE.OBJLoader();
+			loader.setMaterials(materials);
+			loader.load(
+				'models/' + file + '.obj',
+				function (object) {
+					game.vehicle = object;
+					scene.add(object);
+					lock = false;
+					game.vehicle.scale.set(.05, .05, .05);
+					game.vehicle.position.y = 150;
+					game.vehicle.rotation.y = 1.5;
+					game.vehicle.traverse( function ( child ) {
+						if ( child instanceof THREE.Mesh ) {
+							child.castShadow = true;
+						}
+					} );
+					game.vehicle.castShadow = true;
+					scene.add(game.vehicle);
+					console.log("added");
+				},
+				function (xhr) {
+					console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+				},
+				function (error) {
+					console.log('An error happened');
+				}
+			);
+		});
+	} else {
+		var gltfLoader = new THREE.GLTFLoader(THREE.DefaultLoadingManager);
+		gltfLoader.load('models/' + file + '.glb',
+		function ( gltf ) {
+			game.vehicle = gltf.scene;
+			scene.add(gltf.scene);
+			lock = false;
+			if (vehicleType == 1) game.vehicle.scale.set(.04, .05, .04);
+			else game.vehicle.scale.set(.04, .05, .03);
+			game.vehicle.position.y = 150;
+			game.vehicle.rotation.y = 1.5;
+			game.vehicle.traverse( function ( child ) {
+				if ( child instanceof THREE.Mesh ) {
+					child.castShadow = true;
+				}
+			} );
+			game.vehicle.castShadow = true;
+		},
+		function ( xhr ) {
+			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+		},
+		function ( error ) {
+			console.log( 'An error happened' );
+		});
+	}	
 }
 
 function fillParticlesPool(){
@@ -418,6 +440,7 @@ function fillParticlesPool(){
 }
 
 function handleSmoke(){
+	if (vehicleType == 3) return;
 	var speedFactor = 15000 * game.baseSpeed;
 	var intervalSmoke = 140 - speedFactor;
 	if (intervalSmoke < 100) intervalSmoke = 100;
@@ -501,12 +524,19 @@ function handleGameStatus(deltaTime) {
 				game.showReplay = true;
 				printScoreboard(scoreboard.scoreboard);
 				particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.red, 2);  
-				scene.remove(airplane);
+				scene.remove(game.vehicle);
 			  }
 		}
 	}
 }
 
+function handleTardisRotation(){
+	if (game.vehicle == undefined) return;
+	if (vehicleType == 3) game.vehicle.rotation.y = game.vehicle.rotation.y + 0.015;
+	else {
+		
+	}
+}
 
 function loop() {
 	stats.begin();
@@ -544,16 +574,16 @@ function loop() {
 		  }
 	}
 	
-	if (airplane != undefined) {
+	if (game.vehicle != undefined) {
 		updatePlane();
 	}
 
 	if (vehicleType!= options.vehicle) {
 		vehicleType = options.vehicle;
-		if (airplane!=undefined) scene.remove(airplane);
+		if (game.vehicle!=undefined) scene.remove(game.vehicle);
 		removeShield();
 		resetGame();
-		createPlane(vehicleType);
+		createVehicle(vehicleType);
 	}
 
 	handleRotation(deltaTime);
@@ -565,6 +595,7 @@ function loop() {
 	sky.moveClouds();
 	coinsHolder.rotateCoins();
 	enemiesHolder.rotateEnemies();
+	handleTardisRotation();
 	updateUI();
 	renderer.render(scene, camera);
 	stats.end();
