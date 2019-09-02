@@ -1,5 +1,6 @@
 window.addEventListener('load', init, false);
 var gui;
+var enemyMeshStorage;
 var audio, audioListener, scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH, renderer, container;
 var vehicleType = 0;
 var hemisphereLight, shadowLight;
@@ -100,7 +101,7 @@ function addShield(){
 }
 
 function removeShield(){
-	if (game.bubble != undefined) {
+	if (typeof(game.bubble)!='undefined') {
 		scene.remove(game.bubble);
 		game.hasShield = false;
 	}
@@ -130,6 +131,7 @@ function handleShieldFade(deltaTime){
 
 function init() {
 	initUI();
+	initMeshStorage();
 	resetGame();
 	createScene();
 	createLights();
@@ -141,6 +143,11 @@ function init() {
 	createEnemies();
 	setupPlayerInputListener();
 	loop();
+}
+
+function initMeshStorage() {
+	enemyMeshStorage = new EnemyMeshStorage();
+	enemyMeshStorage.load();
 }
 
 function setupPlayerInputListener(){
@@ -508,7 +515,6 @@ function handleEnergy(deltaTime){
 
 function handleGameStatus(deltaTime) {
 	if (game.gameOver) {
-		disableShieldImmunity();
 		game.vehicle.rotation.z += (-Math.PI/2 - game.vehicle.rotation.z)*.0012*deltaTime;
 		game.vehicle.rotation.x += 0.0003*deltaTime;
 		game.gameOverVehicleSpeed *= 1.05;
@@ -525,14 +531,15 @@ function handleGameStatus(deltaTime) {
 				printScoreboard(scoreboard.scoreboard);
 				particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.red, 2);  
 				scene.remove(game.vehicle);
+				removeShield();
 			  }
 		}
 	}
 }
 
-function handleTardisRotation(){
+function handleTardisRotation(deltaTime){
 	if (game.vehicle == undefined) return;
-	if (vehicleType == 3) game.vehicle.rotation.y = game.vehicle.rotation.y + 0.015;
+	if (vehicleType == 3) game.vehicle.rotation.y = game.vehicle.rotation.y + 0.003 * deltaTime;
 	else {
 		
 	}
@@ -540,6 +547,7 @@ function handleTardisRotation(){
 
 function loop() {
 	stats.begin();
+	console.log(enemyMeshStorage.isReady());
 	newTime = new Date().getTime();
 	deltaTime = newTime-oldTime;
 	game.deltaTime = deltaTime;
@@ -595,7 +603,7 @@ function loop() {
 	sky.moveClouds();
 	coinsHolder.rotateCoins();
 	enemiesHolder.rotateEnemies();
-	handleTardisRotation();
+	handleTardisRotation(deltaTime);
 	updateUI();
 	renderer.render(scene, camera);
 	stats.end();
