@@ -344,7 +344,7 @@ function createEnemies(){
 		var ennemy = new Enemy();
 		this.data.enemiesPool.push(ennemy);
 	  }
-	enemiesHolder = new EnemiesHolder(game,data, particlesHolder);
+	enemiesHolder = new EnemiesHolder(game,data, particlesHolder, enemyMeshStorage);
 	scene.add(enemiesHolder.mesh)
   }
 
@@ -547,7 +547,6 @@ function handleTardisRotation(deltaTime){
 
 function loop() {
 	stats.begin();
-	console.log(enemyMeshStorage.isReady());
 	newTime = new Date().getTime();
 	deltaTime = newTime-oldTime;
 	game.deltaTime = deltaTime;
@@ -572,8 +571,10 @@ function loop() {
 		}
 
 		if ((game.firstLoop && game.vehicle != undefined)  || (Math.floor(game.distance)%game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemiesLastSpawn)){
-			game.enemiesLastSpawn = Math.floor(game.distance);
-			enemiesHolder.spawnEnemies();
+			if (enemyMeshStorage.isReady()) {
+				game.enemiesLastSpawn = Math.floor(game.distance);
+				enemiesHolder.spawnEnemies();
+			}
 		  }
 		  
 		if (Math.floor(game.distance)%game.distanceForSpeedUpdate == 0 && Math.floor(game.distance) > game.speedLastUpdate){
