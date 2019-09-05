@@ -6,7 +6,7 @@ EnemyMeshStorage.prototype.load = function() {
     storage.airplane = new AirPlane();
     storage.airplane = this.airplane.mesh;
 	var gltfLoader = new THREE.GLTFLoader(THREE.DefaultLoadingManager);
-	gltfLoader.load('models/spaceship1.glb',
+	gltfLoader.load('models/mars.glb',
 		function ( gltf ) {
 			gltf.scene.traverse( function ( child ) {
 				if ( child instanceof THREE.Mesh ) {
@@ -27,4 +27,14 @@ EnemyMeshStorage.prototype.load = function() {
 EnemyMeshStorage.prototype.isReady = function() {
     if (this.airplane != undefined && this.asteroid != undefined) return true;
     else return false;
+}
+
+EnemyMeshStorage.prototype.getAirplaneMesh = function () {
+	if (!this.isReady()) return;
+	return this.airplane.clone();
+}
+
+EnemyMeshStorage.prototype.getAsteroidMesh = function () {
+	if (!this.isReady()) return;
+	return this.asteroid.clone();
 }
