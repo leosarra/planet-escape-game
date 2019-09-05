@@ -2,7 +2,7 @@
 Cloud = function(){
 	this.mesh = new THREE.Object3D();
   this.mesh.name = "cloud";
-  var geom = new THREE.CubeGeometry(20,20,20);
+  var geom = new THREE.DodecahedronGeometry(20,0);
   var mat = new THREE.MeshPhongMaterial({
     color:Colors.white,
 
@@ -15,7 +15,7 @@ Cloud = function(){
     m.position.z = Math.random()*10;
     m.rotation.z = Math.random()*Math.PI*2;
     m.rotation.y = Math.random()*Math.PI*2;
-    var s = .1 + Math.random()*.9;
+    var s = .1 + Math.random()*.8;
     m.scale.set(s,s,s);
     m.castShadow = true;
     m.receiveShadow = true;
