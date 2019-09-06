@@ -21,6 +21,22 @@ EnemyMeshStorage.prototype.load = function() {
 		},
 		function ( error ) {
 			console.log( 'An error happened' );
+		});
+	gltfLoader.load('models/satelite.glb',
+		function ( gltf ) {
+			gltf.scene.traverse( function ( child ) {
+				if ( child instanceof THREE.Mesh ) {
+					child.castShadow = true;
+				}
+			} );
+            gltf.scene.castShadow = true;
+			storage.satelite = gltf.scene;
+		},
+		function ( xhr ) {
+			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+		},
+		function ( error ) {
+			console.log( 'An error happened' );
 		});	
 }
 
@@ -37,4 +53,9 @@ EnemyMeshStorage.prototype.getAirplaneMesh = function () {
 EnemyMeshStorage.prototype.getAsteroidMesh = function () {
 	if (!this.isReady()) return;
 	return this.asteroid.clone();
+}
+
+EnemyMeshStorage.prototype.getSateliteMesh = function () {
+	if (!this.isReady()) return;
+	return this.satelite.clone();
 }
