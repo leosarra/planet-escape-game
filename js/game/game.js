@@ -40,7 +40,6 @@ var options = {
 	reset: function() {
 		removeShield();
 		resetGame();
-		if (typeof(game.vehicle)!='undefined') scene.remove(game.vehicle);
 		createVehicle(vehicleType);
 	  }
 	};
@@ -96,6 +95,7 @@ function addShield(){
 	  game.bubble = new THREE.Mesh(geom,mat);
 	  game.bubble.position.x = game.vehicle.position.x;
 	  game.bubble.position.y = game.vehicle.position.y;
+	  if (vehicleType == 3) game.bubble.position.y=game.bubble.position.y+8;
 	  scene.add(game.bubble);
 	game.hasShield = true;
 }
@@ -219,6 +219,7 @@ function resetGame(){
 	if (game == undefined) {
 		game = {};
 	}
+	if (typeof(game.vehicle)!='undefined') scene.remove(game.vehicle);
 	game.hasShield = false;
 	game.energyDecayPerFrame = 0.0015;
 	game.level = 1;
@@ -282,6 +283,7 @@ function updatePlane() {
 	if (vehicleType != 3) game.vehicle.rotation.x = (game.vehicle.position.y - targetY) * 0.0004 * deltaTime;
 	if (typeof(game.bubble)!='undefined'){
 		game.bubble.position.y = game.vehicle.position.y;
+		if (vehicleType == 3) game.bubble.position.y=game.bubble.position.y+8;
 		game.bubble.position.x = game.vehicle.position.x;
 		game.bubble.rotation.z = game.vehicle.rotation.z;
 		game.bubble.rotation.x = game.vehicle.rotation.x;
