@@ -21,14 +21,13 @@ EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage){
       enemy.angle = - (i*0.1);
       enemy.distance = Math.floor(Math.random() * (900 - 730 + 1)) + 730;
 
-//>815
-      if (false) {
+      if (enemy.distance > 815) {
         enemy.type = 0;
         enemy.mesh = enemyMeshStorage.getAirplaneMesh();
         enemy.mesh.scale.set(.17,.17,.17);
         enemy.mesh.rotation.y = 3 * Math.PI;
       } else {
-        if (false) {
+        if (Math.random()>0.5) {
           enemy.type = 1;
           enemy.mesh = enemyMeshStorage.getAsteroidMesh();
           enemy.mesh.scale.set(40,40,40);
@@ -55,8 +54,24 @@ EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage){
           if (child.name == "propeller") enemy.propeller = child;
           else if (child.name == "parabola") enemy.sateliteDisc = child;
           else if (child.name == "topPart") enemy.sateliteTopPart = child;
+          else if (child.name == "miniasteroid1") enemy.miniAsteroid1 = child;
+          else if (child.name == "miniasteroid2") enemy.miniAsteroid2 = child;
+          else if (child.name == "miniasteroid3") enemy.miniAsteroid3 = child; 
         }
       } );
+
+      if (enemy.type == 1) {
+        var layout = Math.floor(Math.random() * 4) + 1;
+        if (layout == 1) {
+          enemy.miniAsteroid1.visible = false;
+        } else if (layout == 2) {
+          enemy.miniAsteroid1.visible = false;
+          enemy.miniAsteroid2.visible = false;
+        } else if (layout == 3) {
+          enemy.miniAsteroid2.visible = false;
+        }
+      }
+      
       enemy.mesh.position.y = -650 + Math.sin(enemy.angle)*enemy.distance;
       enemy.mesh.position.x = Math.cos(enemy.angle)*enemy.distance;
       this.mesh.add(enemy.mesh);
@@ -72,14 +87,22 @@ EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage){
       enemy.mesh.position.y = -650 + Math.sin(enemy.angle)*enemy.distance;
       enemy.mesh.position.x = Math.cos(enemy.angle)*enemy.distance;
       if (enemy.type == 0) {
-        enemy.mesh.position.y = -650 + Math.sin(enemy.angle)*enemy.distance;
-        enemy.mesh.position.x = Math.cos(enemy.angle)*enemy.distance;
         enemy.propeller.rotation.x = enemy.propeller.rotation.x + 0.2 * deltaTime;
       } else if (enemy.type == 1) {
-        enemy.mesh.position.y = -650 + Math.sin(enemy.angle)*enemy.distance;
-        enemy.mesh.position.x = Math.cos(enemy.angle)*enemy.distance;
-        enemy.mesh.rotation.z += Math.random()*.005*game.deltaTime;
-        enemy.mesh.rotation.y += Math.random()*.005*game.deltaTime;
+        enemy.mesh.rotation.z += Math.random()*.0015*game.deltaTime;
+        enemy.mesh.rotation.y += Math.random()*.0015*game.deltaTime;
+        if (enemy.miniAsteroid1!=undefined) {
+          enemy.miniAsteroid1.rotation.y += Math.random()*.0025*game.deltaTime;
+          enemy.miniAsteroid1.rotation.z += Math.random()*.0025*game.deltaTime;
+        }
+        if (enemy.miniAsteroid2!=undefined) {
+        enemy.miniAsteroid2.rotation.y += Math.random()*.0035*game.deltaTime;
+        enemy.miniAsteroid2.rotation.z += Math.random()*.0035*game.deltaTime;
+        }
+        if (enemy.miniAsteroid3!=undefined) {
+        enemy.miniAsteroid3.rotation.y += Math.random()*.0015*game.deltaTime;
+        enemy.miniAsteroid3.rotation.z += Math.random()*.0015*game.deltaTime;
+        }
       } else if (enemy.type == 2) {
         enemy.sateliteDisc.rotation.x += 0.05;
       }
