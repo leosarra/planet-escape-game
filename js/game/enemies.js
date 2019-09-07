@@ -22,10 +22,18 @@ EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage){
       enemy.distance = Math.floor(Math.random() * (900 - 730 + 1)) + 730;
 
       if (enemy.distance < 815) {
-        enemy.type = 0;
-        enemy.mesh = enemyMeshStorage.getAirplaneMesh();
-        enemy.mesh.scale.set(.17,.17,.17);
-        enemy.mesh.rotation.y = 3 * Math.PI;
+        if (Math.random>0.5) {
+          enemy.type = 0;
+          enemy.mesh = enemyMeshStorage.getAirplaneMesh();
+          enemy.mesh.scale.set(.17,.17,.17);
+          enemy.mesh.rotation.y = 3 * Math.PI;
+        } else {
+          enemy.type = 3;
+          enemy.mesh = enemyMeshStorage.getPterodactylMesh();
+          enemy.mesh.scale.set(6, 6, 6);
+          enemy.mesh.rotation.y = Math.PI;
+        }
+
       } else {
         if (Math.random()>0.5) {
           enemy.type = 1;
@@ -56,7 +64,11 @@ EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage){
           else if (child.name == "topPart") enemy.sateliteTopPart = child;
           else if (child.name == "miniasteroid1") enemy.miniAsteroid1 = child;
           else if (child.name == "miniasteroid2") enemy.miniAsteroid2 = child;
-          else if (child.name == "miniasteroid3") enemy.miniAsteroid3 = child; 
+          else if (child.name == "miniasteroid3") enemy.miniAsteroid3 = child;
+          else if (child.name == "wingLeft") enemy.wingLeft = child;
+          else if (child.name == "wingRight") enemy.wingRight = child;
+          else if (child.name == "legLeft") enemy.legLeft = child;
+          else if (child.name == "legRight") enemy.legRight = child;
         }
       } );
 
