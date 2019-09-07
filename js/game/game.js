@@ -114,7 +114,7 @@ function disableShieldImmunity(){
 }
 
 function handleShieldFade(deltaTime){
-	if (game.bubble == undefined) return;
+	if (game.bubble == undefined || game.gameOver) return;
 	if (game.shieldCooldown!=0) {
 		game.shieldCooldown = game.shieldCooldown - deltaTime;
 		if (game.shieldCooldown<0) game.shieldCooldown = 0;
