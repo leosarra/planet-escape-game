@@ -375,7 +375,7 @@ function createVehicle(vehicleType) {
 	if (vehicleType == 0) file = "spaceship1";
 	else if (vehicleType == 1) file = "spaceship2";
 	else if (vehicleType == 2) file = "spaceship3";
-	else if (vehicleType == 3) file = "spaceship4";
+	else if (vehicleType == 3) file = "TARDIS";
 	if (vehicleType == 3) {
 		var mtlLoader = new THREE.MTLLoader();
 		mtlLoader.load('models/' + file + '.mtl', function (materials) {
