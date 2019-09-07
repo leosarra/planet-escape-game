@@ -37,6 +37,23 @@ EnemyMeshStorage.prototype.load = function() {
 		},
 		function ( error ) {
 			console.log( 'An error happened' );
+		});
+	
+	gltfLoader.load('models/pterodactyl.glb',
+		function ( gltf ) {
+			gltf.scene.traverse( function ( child ) {
+				if ( child instanceof THREE.Mesh ) {
+					child.castShadow = true;
+				}
+			} );
+            gltf.scene.castShadow = true;
+			storage.pterodactyl = gltf.scene;
+		},
+		function ( xhr ) {
+			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+		},
+		function ( error ) {
+			console.log( 'An error happened' );
 		});	
 }
 
@@ -58,4 +75,9 @@ EnemyMeshStorage.prototype.getAsteroidMesh = function () {
 EnemyMeshStorage.prototype.getSateliteMesh = function () {
 	if (!this.isReady()) return;
 	return this.satelite.clone();
+}
+
+EnemyMeshStorage.prototype.getPterodactyl = function () {
+	if (!this.isReady()) return;
+	return this.pterodactyl.clone();
 }
