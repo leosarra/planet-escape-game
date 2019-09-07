@@ -252,6 +252,10 @@ function resetGame() {
 	game.gameOverVehicleSpeed = .002;
 	game.showReplay = false;
 	game.scoreAdded = false;
+	game.vehicleAdjustmentPositionSpeed = 0.005;
+	game.vehicleAdjustmentRotationSpeedZ = 0.0008;
+	game.vehicleAdjustmentRotationSpeedX = 0.00001;
+	game.discountEnergyCost = 1;
 	scoreboard.level.innerHTML = 1;
 	scoreboard.distance.innerHTML == 0;
 	scoreboard.energy.style.right = (100 - game.energy) + "%";
@@ -273,14 +277,14 @@ function handleMouseMove(event) {
 }
 
 
-function updatePlane() {
+function updateVehicle() {
 	if (game.gameOver || game.vehicle == undefined) return;
 	var targetY = normalize(mousePos.y, -.75, .75, 75, 250);
 	var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
-	game.vehicle.position.y += (targetY - game.vehicle.position.y) * 0.005 * deltaTime;
-	game.vehicle.position.x += (targetX - game.vehicle.position.x) * 0.005 * deltaTime;
-	game.vehicle.rotation.z = (targetY - game.vehicle.position.y) * 0.0008 * deltaTime;
-	if (vehicleType != 3) game.vehicle.rotation.x = (game.vehicle.position.y - targetY) * 0.0004 * deltaTime;
+	game.vehicle.position.y += (targetY - game.vehicle.position.y) * game.vehicleAdjustmentPositionSpeed * deltaTime;
+	game.vehicle.position.x += (targetX - game.vehicle.position.x) * game.vehicleAdjustmentPositionSpeed * deltaTime;
+	game.vehicle.rotation.z = (targetY - game.vehicle.position.y) * game.vehicleAdjustmentRotationSpeedZ * deltaTime;
+	if (vehicleType != 3) game.vehicle.rotation.x = (game.vehicle.position.y - targetY) * game.vehicleAdjustmentRotationSpeedX * deltaTime;
 	if (typeof (game.bubble) != 'undefined') {
 		game.bubble.position.y = game.vehicle.position.y;
 		if (vehicleType == 3) game.bubble.position.y = game.bubble.position.y + 8;
@@ -372,10 +376,34 @@ function createSky() {
 
 function createVehicle(vehicleType) {
 	var file = null;
-	if (vehicleType == 0) file = "spaceship1";
-	else if (vehicleType == 1) file = "spaceship2";
-	else if (vehicleType == 2) file = "spaceship3";
-	else if (vehicleType == 3) file = "TARDIS";
+	if (vehicleType == 0) {
+		file = "spaceship1";
+		game.vehicleAdjustmentPositionSpeed = 0.005;
+		game.vehicleAdjustmentRotationSpeedZ = 0.0008;
+		game.vehicleAdjustmentRotationSpeedX = 0.00001;
+		game.discountEnergyCost = 1;
+	}
+	else if (vehicleType == 1) {
+		file = "spaceship2";
+		game.vehicleAdjustmentPositionSpeed = 0.0033;
+		game.vehicleAdjustmentRotationSpeedZ = 0.0004;
+		game.vehicleAdjustmentRotationSpeedX = 0.00001;
+		game.discountEnergyCost = 0.65;
+	}
+	else if (vehicleType == 2) {
+		file = "spaceship3";
+		game.vehicleAdjustmentPositionSpeed = 0.0075;
+		game.vehicleAdjustmentRotationSpeedZ = 0.0008;
+		game.vehicleAdjustmentRotationSpeedX = 0.00005;
+		game.discountEnergyCost = 1.10;
+	}
+	else if (vehicleType == 3) {
+		file = "TARDIS";
+		game.vehicleAdjustmentPositionSpeed = 0.004;
+		game.vehicleAdjustmentRotationSpeedZ = 0.001;
+		game.vehicleAdjustmentRotationSpeedX = 0.005;
+		game.discountEnergyCost = 0.77;
+	}
 	if (vehicleType == 3) {
 		var mtlLoader = new THREE.MTLLoader();
 		mtlLoader.load('models/' + file + '.mtl', function (materials) {
@@ -508,9 +536,9 @@ function handleSpeed(deltaTime) {
 }
 
 function handleEnergy(deltaTime) {
-	var energyMinus = game.energyDecayPerFrame * deltaTime;
+	var energyMinus = game.energyDecayPerFrame * deltaTime * game.discountEnergyCost;
 	if (game.level > 1) energyMinus = energyMinus * (game.level / 3)
-	if (game.hasShield) energyMinus = energyMinus + game.shieldActiveCost;
+	if (game.hasShield) energyMinus += game.shieldActiveCost;
 	game.energy = game.energy - energyMinus;
 	if (game.energy <= 0) game.gameOver = true;
 }
@@ -586,7 +614,7 @@ function loop() {
 	}
 
 	if (game.vehicle != undefined) {
-		updatePlane();
+		updateVehicle();
 	}
 
 	if (vehicleType != options.vehicle) {
