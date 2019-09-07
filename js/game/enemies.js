@@ -22,7 +22,7 @@ EnemiesHolder.prototype.spawnEnemies = function () {
     enemy.distance = Math.floor(Math.random() * (900 - 730 + 1)) + 730;
 
     if (enemy.distance < 815) {
-      if (Math.random > 0.5) {
+      if (Math.random() > 0.5) {
         enemy.type = 0;
         enemy.mesh = enemyMeshStorage.getAirplaneMesh();
         enemy.mesh.scale.set(.17, .17, .17);
