@@ -60,8 +60,8 @@ Particle.prototype.explode = function (isSmoke, speedFactor, pos, color, scale) 
     x: targetX, y: targetY, delay: Math.random() * .1, ease: ease, onComplete: function () {
       if (_p) _p.remove(_this.mesh);
       _this.mesh.scale.set(1, 1, 1);
-      if (isSmoke) data.smokePool.unshift(_this);
-      else data.particlesPool.unshift(_this);
+      if (isSmoke) _this.data.smokePool.unshift(_this);
+      else _this.data.particlesPool.unshift(_this);
     }
   });
 }
@@ -69,7 +69,6 @@ Particle.prototype.explode = function (isSmoke, speedFactor, pos, color, scale) 
 ParticlesHolder = function (data) {
   this.mesh = new THREE.Object3D();
   this.data = data;
-  this.data.particlesActive = [];
 }
 
 ParticlesHolder.prototype.spawnParticles = function (isSmoke, speedFactor, pos, density, color, scale) {
