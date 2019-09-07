@@ -97,7 +97,8 @@ EnemiesHolder.prototype.spawnEnemies = function () {
 EnemiesHolder.prototype.rotateEnemies = function () {
   for (var i = 0; i < this.enemiesInUse.length; i++) {
     var enemy = this.enemiesInUse[i];
-    enemy.angle += this.game.baseSpeed * this.game.deltaTime * 0.6;
+    var speedBonus = (enemy.type == 0 || enemy.type == 3) ? 0.05 : 0.0;
+    enemy.angle += this.game.baseSpeed * this.game.deltaTime * (0.6+speedBonus);
     if (enemy.angle > Math.PI * 2) enemy.angle -= Math.PI * 2;
     enemy.mesh.position.y = -650 + Math.sin(enemy.angle) * enemy.distance;
     enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
