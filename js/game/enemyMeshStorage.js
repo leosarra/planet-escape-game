@@ -77,7 +77,7 @@ EnemyMeshStorage.prototype.getSateliteMesh = function () {
 	return this.satelite.clone();
 }
 
-EnemyMeshStorage.prototype.getPterodactyl = function () {
+EnemyMeshStorage.prototype.getPterodactylMesh = function () {
 	if (!this.isReady()) return;
 	return this.pterodactyl.clone();
 }
