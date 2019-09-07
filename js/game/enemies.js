@@ -1,8 +1,9 @@
-EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage) {
+EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage, projectilesHolder) {
   this.game = game;
   this.data = data;
   this.particlesHolder = particlesHolder;
   this.enemyMeshStorage = enemyMeshStorage;
+  this.projectilesHolder = projectilesHolder;
   this.mesh = new THREE.Object3D();
   this.enemiesInUse = [];
 }
@@ -150,6 +151,12 @@ EnemiesHolder.prototype.rotateEnemies = function () {
 
     }
     if (game.vehicle == undefined) continue;
+    if (this.projectilesHolder.checkCollisions(enemy.mesh.position)) {
+      this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position, 5, Colors.green, 3);
+      this.data.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.mesh.remove(enemy.mesh);
+      i--;
+    }
     var diffPos = game.vehicle.position.clone().sub(enemy.mesh.position.clone());
     var d = diffPos.length();
     if (d < 15) {
