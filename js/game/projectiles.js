@@ -63,10 +63,10 @@ ProjectilesHolder.prototype.checkCollisions = function (pos) {
         var diffPos = projectile.mesh.position.clone().sub(pos.clone());
         var d = diffPos.length();
         if (d < 18) {
-            projectile.mesh.visible = false;
             projectile.tween1.kill();
             projectile.tween2.kill();
             this.projectilesPool.unshift(this.activeProjectiles.splice(i, 1)[0]);
+            this.mesh.remove(projectile.mesh);
             i--;
             return true;
         }
