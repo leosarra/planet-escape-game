@@ -27,7 +27,6 @@ var Colors = {
 };
 
 var data = {
-	enemiesPool: [],
 	particlesPool: [],
 	smokePool: [],
 }
@@ -358,11 +357,7 @@ function createCoins() {
 }
 
 function createEnemies() {
-	for (var i = 0; i < 10; i++) {
-		var ennemy = new Enemy();
-		this.data.enemiesPool.push(ennemy);
-	}
-	enemiesHolder = new EnemiesHolder(game, data, particlesHolder, enemyMeshStorage,projectilesHolder);
+	enemiesHolder = new EnemiesHolder(game, particlesHolder, enemyMeshStorage,projectilesHolder);
 	scene.add(enemiesHolder.mesh)
 }
 
@@ -644,8 +639,8 @@ function loop() {
 	handleSmoke();
 	handleGameStatus(deltaTime);
 	sky.moveClouds();
-	coinsHolder.rotateCoins();
-	enemiesHolder.rotateEnemies();
+	coinsHolder.animateCoins();
+	enemiesHolder.animateEnemies();
 	handleTardisRotation(deltaTime);
 	updateUI();
 	renderer.render(scene, camera);

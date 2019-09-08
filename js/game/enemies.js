@@ -1,11 +1,11 @@
-EnemiesHolder = function (game, data, particlesHolder, enemyMeshStorage, projectilesHolder) {
+EnemiesHolder = function (game, particlesHolder, enemyMeshStorage, projectilesHolder) {
   this.game = game;
-  this.data = data;
   this.particlesHolder = particlesHolder;
   this.enemyMeshStorage = enemyMeshStorage;
   this.projectilesHolder = projectilesHolder;
   this.mesh = new THREE.Object3D();
   this.enemiesInUse = [];
+  this.enemiesPool = [];
 }
 
 
@@ -14,8 +14,8 @@ EnemiesHolder.prototype.spawnEnemies = function () {
 
   for (var i = 0; i < nEnemies; i++) {
     var enemy;
-    if (this.data.enemiesPool.length) {
-      enemy = this.data.enemiesPool.pop();
+    if (this.enemiesPool.length) {
+      enemy = this.enemiesPool.pop();
     } else {
       enemy = new Enemy();
     }
@@ -95,11 +95,11 @@ EnemiesHolder.prototype.spawnEnemies = function () {
   }
 }
 
-EnemiesHolder.prototype.rotateEnemies = function () {
+EnemiesHolder.prototype.animateEnemies = function () {
   for (var i = 0; i < this.enemiesInUse.length; i++) {
     var enemy = this.enemiesInUse[i];
     if (enemy == undefined) {
-      this.data.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       i--;
       continue;
     }
@@ -158,7 +158,7 @@ EnemiesHolder.prototype.rotateEnemies = function () {
     if (game.vehicle == undefined) continue;
     if (this.projectilesHolder.checkCollisions(enemy.mesh.position)) {
       this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position, 5, Colors.green, 3);
-      this.data.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
       i--;
     }
@@ -167,16 +167,16 @@ EnemiesHolder.prototype.rotateEnemies = function () {
     if (d < 15) {
       this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position.clone(), 15, 0x009999, 3);
 
-      this.data.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      i--;
       this.mesh.remove(enemy.mesh);
       if (this.game.hasShield) {
         this.particlesHolder.spawnParticles(false, 0, game.vehicle.position, 5, Colors.green, 3);
         disableShieldImmunity();
       }
       else game.gameOver = true;
-      i--;
     } else if (enemy.angle > Math.PI) {
-      this.data.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
       i--;
     }
