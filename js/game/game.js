@@ -7,7 +7,7 @@ var hemisphereLight, shadowLight;
 var terrain, sky;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
-var coinsHolder, enemiesHolder;
+var coinsHolder, enemiesHolder, projectilesHolder;
 var particlesHolder;
 var stats;
 var game, scoreboard;
@@ -15,6 +15,7 @@ var paused = false;
 var Colors = {
 	red: 0xf25346,
 	green: 0x38761D,
+	lightGreen: 0x7CFC00,
 	white: 0xd8d0d1,
 	brown: 0x59332e,
 	pink: 0xF5986E,
@@ -29,7 +30,6 @@ var data = {
 	enemiesPool: [],
 	particlesPool: [],
 	smokePool: [],
-	particlesActive: [],
 }
 
 var options = {
@@ -37,6 +37,7 @@ var options = {
 	difficulty: 0,
 	audio: false,
 	paused: false,
+	noFireCost: false,
 	reset: function () {
 		removeShield();
 		resetGame();
@@ -140,6 +141,7 @@ function init() {
 	createSky();
 	fillParticlesPool();
 	createCoins();
+	createProjectiles();
 	createEnemies();
 	setupPlayerInputListener();
 	loop();
@@ -159,15 +161,21 @@ function setupPlayerInputListener() {
 		}
 	}, false)
 	document.addEventListener('keyup', (e) => {
-		if (e.which == 32) {
-			if (!game.hasShield) addShield();
-			else disableShieldImmunity();
-		} else if (e.which == 83 && game.showReplay) {
+		if (e.which == 83 && game.showReplay) {
 			var name = window.prompt("Enter your name");
 			if (name === "") alert("Name can't be left empty");
 			addScore(name, Math.floor(game.distance * 40));
 			game.scoreAdded = true;
 			printScoreboard(scoreboard.scoreboard);
+		} else if (e.which == 83 && !game.showReplay) {
+			if (!game.hasShield) addShield();
+			else disableShieldImmunity();
+		} else if (e.which == 65 && !game.gameOver && game.vehicle!= undefined && vehicleType != 3) {
+			var vehPos = game.vehicle.position.clone();
+			if (vehicleType == 0) vehPos.x += 12;
+			else if (vehicleType == 1) vehPos.x += 3;
+			if (!options.noFireCost) game.energy -= 1;
+			projectilesHolder.spawnParticles(vehPos);
 		}
 	});
 }
@@ -176,7 +184,7 @@ function initUI() {
 	gui = new dat.GUI();
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3: 2, TARDIS: 3 });
-	gui.add(options, 'difficulty', 0, 10);
+	gui.add(options, 'noFireCost');
 	gui.add(options, 'paused');
 	gui.add(options, "audio").onChange(function () {
 
@@ -280,7 +288,7 @@ function handleMouseMove(event) {
 function updateVehicle() {
 	if (game.gameOver || game.vehicle == undefined) return;
 	var targetY = normalize(mousePos.y, -.75, .75, 75, 250);
-	var targetX = normalize(mousePos.x, -.75, .75, -100, 100);
+	var targetX = normalize(mousePos.x, -1, 1, -150, 150);
 	game.vehicle.position.y += (targetY - game.vehicle.position.y) * game.vehicleAdjustmentPositionSpeed * deltaTime;
 	game.vehicle.position.x += (targetX - game.vehicle.position.x) * game.vehicleAdjustmentPositionSpeed * deltaTime;
 	game.vehicle.rotation.z = (targetY - game.vehicle.position.y) * game.vehicleAdjustmentRotationSpeedZ * deltaTime;
@@ -339,6 +347,10 @@ function createLights() {
 }
 
 
+function createProjectiles(){
+	projectilesHolder = new ProjectilesHolder(10);
+	scene.add(projectilesHolder.mesh);
+}
 
 function createCoins() {
 	coinsHolder = new CoinsHolder(game, particlesHolder, 20);
@@ -350,7 +362,7 @@ function createEnemies() {
 		var ennemy = new Enemy();
 		this.data.enemiesPool.push(ennemy);
 	}
-	enemiesHolder = new EnemiesHolder(game, data, particlesHolder, enemyMeshStorage);
+	enemiesHolder = new EnemiesHolder(game, data, particlesHolder, enemyMeshStorage,projectilesHolder);
 	scene.add(enemiesHolder.mesh)
 }
 
