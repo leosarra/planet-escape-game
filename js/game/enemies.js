@@ -98,6 +98,11 @@ EnemiesHolder.prototype.spawnEnemies = function () {
 EnemiesHolder.prototype.rotateEnemies = function () {
   for (var i = 0; i < this.enemiesInUse.length; i++) {
     var enemy = this.enemiesInUse[i];
+    if (enemy == undefined) {
+      this.data.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
+      i--;
+      continue;
+    }
     var speedBonus = (enemy.type == 0 || enemy.type == 3) ? 0.05 : 0.0;
     enemy.angle += this.game.baseSpeed * this.game.deltaTime * (0.6+speedBonus);
     if (enemy.angle > Math.PI * 2) enemy.angle -= Math.PI * 2;
@@ -167,7 +172,6 @@ EnemiesHolder.prototype.rotateEnemies = function () {
       if (this.game.hasShield) {
         this.particlesHolder.spawnParticles(false, 0, game.vehicle.position, 5, Colors.green, 3);
         disableShieldImmunity();
-        this.mesh.remove(enemy.mesh);
       }
       else game.gameOver = true;
       i--;
@@ -180,7 +184,7 @@ EnemiesHolder.prototype.rotateEnemies = function () {
 }
 
 
-Enemy = function (meshStorage) {
+Enemy = function () {
   this.type = -1;
   this.angle = 0;
   this.dist = 0;
