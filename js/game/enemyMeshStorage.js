@@ -58,7 +58,7 @@ EnemyMeshStorage.prototype.load = function () {
 }
 
 EnemyMeshStorage.prototype.isReady = function () {
-	if (this.airplane != undefined && this.asteroid != undefined) return true;
+	if (this.airplane != undefined && this.asteroid != undefined && this.satelite!=undefined && this.pterodactyl != undefined) return true;
 	else return false;
 }
 
