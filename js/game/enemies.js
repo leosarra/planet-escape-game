@@ -98,11 +98,6 @@ EnemiesHolder.prototype.spawnEnemies = function () {
 EnemiesHolder.prototype.animateEnemies = function () {
   for (var i = 0; i < this.enemiesInUse.length; i++) {
     var enemy = this.enemiesInUse[i];
-    if (enemy == undefined) {
-      this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
-      i--;
-      continue;
-    }
     var speedBonus = (enemy.type == 0 || enemy.type == 3) ? 0.05 : 0.0;
     enemy.angle += this.game.baseSpeed * this.game.deltaTime * (0.6+speedBonus);
     if (enemy.angle > Math.PI * 2) enemy.angle -= Math.PI * 2;
@@ -161,6 +156,7 @@ EnemiesHolder.prototype.animateEnemies = function () {
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
       i--;
+      continue;
     }
     var diffPos = game.vehicle.position.clone().sub(enemy.mesh.position.clone());
     var d = diffPos.length();
