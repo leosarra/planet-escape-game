@@ -90,8 +90,8 @@ EnemiesHolder.prototype.spawnEnemies = function () {
 
     enemy.mesh.position.y = -650 + Math.sin(enemy.angle) * enemy.distance;
     enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
-    this.mesh.add(enemy.mesh);
     this.enemiesInUse.push(enemy);
+    this.mesh.add(enemy.mesh);
   }
 }
 
@@ -165,8 +165,6 @@ EnemiesHolder.prototype.animateEnemies = function () {
     var diffPos = game.vehicle.position.clone().sub(enemy.mesh.position.clone());
     var d = diffPos.length();
     if (d < 15) {
-      this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position.clone(), 15, 0x009999, 3);
-
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       i--;
       this.mesh.remove(enemy.mesh);
@@ -174,7 +172,10 @@ EnemiesHolder.prototype.animateEnemies = function () {
         this.particlesHolder.spawnParticles(false, 0, game.vehicle.position, 5, Colors.green, 3);
         disableShieldImmunity();
       }
-      else game.gameOver = true;
+      else {
+        this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position.clone(), 15, Colors.red, 3);
+        game.gameOver = true;
+      }
     } else if (enemy.angle > Math.PI) {
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
