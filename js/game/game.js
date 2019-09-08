@@ -166,7 +166,7 @@ function setupPlayerInputListener() {
 		} else if (e.which == 83 && !game.showReplay) {
 			if (!game.hasShield) addShield();
 			else disableShieldImmunity();
-		} else if (e.which == 65 && !game.gameOver && game.vehicle!= undefined && vehicleType != 3) {
+		} else if (e.which == 65 && !game.gameOver && game.vehicle != undefined && vehicleType != 3) {
 			var vehPos = game.vehicle.position.clone();
 			if (vehicleType == 0) vehPos.x += 12;
 			else if (vehicleType == 1) vehPos.x += 3;
@@ -346,7 +346,7 @@ function createLights() {
 }
 
 
-function createProjectiles(){
+function createProjectiles() {
 	projectilesHolder = new ProjectilesHolder(10);
 	scene.add(projectilesHolder.mesh);
 }
@@ -357,7 +357,7 @@ function createCoins() {
 }
 
 function createEnemies() {
-	enemiesHolder = new EnemiesHolder(game, particlesHolder, enemyMeshStorage,projectilesHolder);
+	enemiesHolder = new EnemiesHolder(game, particlesHolder, enemyMeshStorage, projectilesHolder);
 	scene.add(enemiesHolder.mesh)
 }
 

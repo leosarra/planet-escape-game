@@ -42,11 +42,11 @@ BonusHolder.prototype.spawnCoins = function () {
 		var color = 0x009999;
 		var rnd = Math.random();
 
-		if (rnd<0.01 && !goldCoinSpawned) {
+		if (rnd < 0.01 && !goldCoinSpawned) {
 			coin.type = 0;
 			color = 0xFFD700;
 			goldCoinSpawned = true;
-		} else if (rnd<0.15 && !goldCoinSpawned) {
+		} else if (rnd < 0.15 && !goldCoinSpawned) {
 			coin.type = 1;
 			color = 0x38761D;
 		} else {
@@ -83,7 +83,7 @@ BonusHolder.prototype.animateElements = function () {
 			this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
 			this.mesh.remove(coin.mesh);
 			var energyBonus = 5;
-			if (coin.type == 1) energyBonus = energyBonus*2;
+			if (coin.type == 1) energyBonus = energyBonus * 2;
 			else if (coin.type == 0) energyBonus = 100;
 			this.game.energy += energyBonus;
 			if (this.game.energy > 100) this.game.energy = 100;
