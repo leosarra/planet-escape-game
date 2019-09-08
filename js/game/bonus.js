@@ -13,7 +13,7 @@ Coin = function () {
 	this.dist = 0;
 }
 
-CoinsHolder = function (game, particlesHolder, nCoins) {
+BonusHolder = function (game, particlesHolder, nCoins) {
 	this.particlesHolder = particlesHolder;
 	this.mesh = new THREE.Object3D();
 	this.coinsInUse = [];
@@ -26,7 +26,7 @@ CoinsHolder = function (game, particlesHolder, nCoins) {
 
 }
 
-CoinsHolder.prototype.spawnCoins = function () {
+BonusHolder.prototype.spawnCoins = function () {
 
 	var nCoins = 1 + Math.floor(Math.random() * 7);
 	var d = 700 + 100 + (-1 + Math.random() * 2) * 120;
@@ -63,7 +63,7 @@ CoinsHolder.prototype.spawnCoins = function () {
 	}
 }
 
-CoinsHolder.prototype.animateCoins = function () {
+BonusHolder.prototype.animateElements = function () {
 	for (var i = 0; i < this.coinsInUse.length; i++) {
 		var coin = this.coinsInUse[i];
 		if (coin.exploding) continue;
