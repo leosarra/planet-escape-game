@@ -7,7 +7,7 @@ var hemisphereLight, shadowLight;
 var terrain, sky;
 var newTime = new Date().getTime();
 var oldTime = new Date().getTime();
-var coinsHolder, enemiesHolder, projectilesHolder;
+var bonusHolder, enemiesHolder, projectilesHolder;
 var particlesHolder;
 var stats;
 var game, scoreboard;
@@ -25,7 +25,7 @@ var Colors = {
 	black: 0x000000,
 	gray: 0xD3D3D3
 };
-
+var meshReady = false;
 
 var options = {
 	vehicle: 0,
@@ -159,6 +159,7 @@ function setupPlayerInputListener() {
 		if (e.which == 83 && game.showReplay) {
 			var name = window.prompt("Enter your name");
 			if (name === "") alert("Name can't be left empty");
+			console.log("adding");
 			addScore(name, Math.floor(game.distance * 40));
 			game.scoreAdded = true;
 			printScoreboard(scoreboard.scoreboard);
@@ -169,7 +170,7 @@ function setupPlayerInputListener() {
 			var vehPos = game.vehicle.position.clone();
 			if (vehicleType == 0) vehPos.x += 12;
 			else if (vehicleType == 1) vehPos.x += 3;
-			if (!options.noFireCost) game.energy -= 1;
+			if (!options.noFireCost) game.energy -= 5;
 			projectilesHolder.spawnParticles(vehPos);
 		}
 	});
@@ -179,7 +180,10 @@ function initUI() {
 	gui = new dat.GUI();
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3: 2, TARDIS: 3 });
-	gui.add(options, 'noFireCost');
+	gui.add(options, 'noFireCost').onChange(function () {
+		resetGame();
+		createVehicle(vehicleType);
+	});
 	gui.add(options, 'paused');
 	gui.add(options, "audio").onChange(function () {
 
@@ -227,7 +231,7 @@ function resetGame() {
 	game.energyDecayPerFrame = 0.0015;
 	game.level = 1;
 	game.energy = 100;
-	game.firstLoop = true;
+	game.firstMeshesSpawned = false;
 	game.vehicle = undefined;
 	game.targetBaseSpeed = .00035;
 	game.vehicleInitialSpeed = .00035;
@@ -348,8 +352,8 @@ function createProjectiles(){
 }
 
 function createCoins() {
-	coinsHolder = new CoinsHolder(game, particlesHolder, 20);
-	scene.add(coinsHolder.mesh)
+	bonusHolder = new BonusHolder(game, particlesHolder, 20);
+	scene.add(bonusHolder.mesh)
 }
 
 function createEnemies() {
@@ -576,6 +580,7 @@ function loop() {
 	deltaTime = newTime - oldTime;
 	game.deltaTime = deltaTime;
 	oldTime = newTime;
+	var meshesReady = enemyMeshStorage.isReady();
 	if (options.paused) {
 		requestAnimationFrame(loop);
 		return;
@@ -590,12 +595,12 @@ function loop() {
 			game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement * game.level;
 		}
 
-		if ((game.firstLoop && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && Math.floor(game.distance) > game.coinLastSpawn)) {
+		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
 			game.coinLastSpawn = Math.floor(game.distance);
-			coinsHolder.spawnCoins();
+			bonusHolder.spawnCoins();
 		}
 
-		if ((game.firstLoop && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && Math.floor(game.distance) > game.enemiesLastSpawn)) {
+		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.enemiesLastSpawn)) {
 			if (enemyMeshStorage.isReady()) {
 				game.enemiesLastSpawn = Math.floor(game.distance);
 				enemiesHolder.spawnEnemies();
@@ -619,7 +624,7 @@ function loop() {
 		resetGame();
 		createVehicle(vehicleType);
 	}
-
+	if (meshesReady && !game.firstMeshesSpawned) game.firstMeshesSpawned = true;
 	handleRotation(deltaTime);
 	handleSpeed(deltaTime);
 	handleEnergy(deltaTime);
@@ -627,12 +632,11 @@ function loop() {
 	handleSmoke();
 	handleGameStatus(deltaTime);
 	sky.moveClouds();
-	coinsHolder.animateCoins();
+	bonusHolder.animateElements();
 	enemiesHolder.animateEnemies();
 	handleTardisRotation(deltaTime);
 	updateUI();
 	renderer.render(scene, camera);
 	stats.end();
-	game.firstLoop = false;
 	requestAnimationFrame(loop);
 }
