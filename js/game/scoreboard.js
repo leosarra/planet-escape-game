@@ -15,6 +15,11 @@ function addScore(name, distance) {
     };
     var ins_pos = undefined;
     for (var i = 0; i < u.length; i++) {
+        if (u[i].name == undefined) {
+            u.splice(i, 1);
+            i--;
+            continue;
+        }
         if (u[i].name == name && u[i].distance == distance) return;
         if (u[i].distance <= distance) {
             ins_pos = i;
