@@ -31,6 +31,7 @@ CoinsHolder.prototype.spawnCoins = function () {
 	var nCoins = 1 + Math.floor(Math.random() * 7);
 	var d = 700 + 100 + (-1 + Math.random() * 2) * 120;
 	var amplitude = 8 + Math.round(Math.random() * 7);
+	var goldCoinSpawned = false;
 	for (var i = 0; i < nCoins; i++) {
 		var coin;
 		if (this.coinsPool.length) {
@@ -38,6 +39,21 @@ CoinsHolder.prototype.spawnCoins = function () {
 		} else {
 			coin = new Coin();
 		}
+		var color = 0x009999;
+		var rnd = Math.random();
+
+		if (rnd<0.01 && !goldCoinSpawned) {
+			coin.type = 0;
+			color = 0xFFD700;
+			goldCoinSpawned = true;
+		} else if (rnd<0.15 && !goldCoinSpawned) {
+			coin.type = 1;
+			color = 0x38761D;
+		} else {
+			coin.type = 2;
+		}
+		coin.mesh.material.color = new THREE.Color(color);
+		coin.mesh.material.needsUpdate = true;
 		this.mesh.add(coin.mesh);
 		this.coinsInUse.push(coin);
 		coin.angle = - (i * 0.02);
@@ -47,7 +63,7 @@ CoinsHolder.prototype.spawnCoins = function () {
 	}
 }
 
-CoinsHolder.prototype.rotateCoins = function () {
+CoinsHolder.prototype.animateCoins = function () {
 	for (var i = 0; i < this.coinsInUse.length; i++) {
 		var coin = this.coinsInUse[i];
 		if (coin.exploding) continue;
@@ -66,9 +82,12 @@ CoinsHolder.prototype.rotateCoins = function () {
 		if (d < 15) {
 			this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
 			this.mesh.remove(coin.mesh);
-			this.game.energy += 5;
+			var energyBonus = 5;
+			if (coin.type == 1) energyBonus = energyBonus*2;
+			else if (coin.type == 0) energyBonus = 100;
+			this.game.energy += energyBonus;
 			if (this.game.energy > 100) this.game.energy = 100;
-			this.particlesHolder.spawnParticles(false, 0, coin.mesh.position.clone(), 5, 0x009999, .8);
+			this.particlesHolder.spawnParticles(false, 0, coin.mesh.position.clone(), 5, coin.mesh.material.color, .8);
 			i--;
 		} else if (coin.angle > Math.PI || coin.mesh.position.x < -600) {
 			this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
