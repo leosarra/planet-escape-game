@@ -26,10 +26,6 @@ var Colors = {
 	gray: 0xD3D3D3
 };
 
-var data = {
-	particlesPool: [],
-	smokePool: [],
-}
 
 var options = {
 	vehicle: 0,
@@ -471,15 +467,7 @@ function createVehicle(vehicleType) {
 }
 
 function fillParticlesPool() {
-	for (var i = 0; i < 10; i++) {
-		var particle = new Particle(false, data);
-		data.particlesPool.push(particle);
-	}
-	for (var i = 0; i < 10; i++) {
-		var particle = new Particle(true, data);
-		data.smokePool.push(particle);
-	}
-	particlesHolder = new ParticlesHolder(data);
+	particlesHolder = new ParticlesHolder();
 	scene.add(particlesHolder.mesh)
 }
 
@@ -491,14 +479,14 @@ function handleSmoke() {
 	if (typeof (game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke && !game.gameOver) {
 		var vehPos = game.vehicle.position.clone();
 		vehPos.x -= 10;
-		particlesHolder.spawnParticles(true, speedFactor, vehPos, 5, Colors.ligherBlack, .8);
+		particlesHolder.spawnParticles(true, speedFactor, vehPos, 1, Colors.ligherBlack, .8);
 		game.vehicle.position.clone();
 		game.lastSmokeSpawn = newTime;
 	}
 	else if (game.gameOver && typeof (game.vehicle) != 'undefined' && newTime - game.lastSmokeSpawn > intervalSmoke / 2 && !game.showReplay) {
 		var vehPos = game.vehicle.position.clone();
 		vehPos.x -= 10;
-		particlesHolder.spawnParticles(true, speedFactor, vehPos, 5, Colors.black, 1.1);
+		particlesHolder.spawnParticles(true, speedFactor, vehPos, 1, Colors.black, 1.1);
 		game.vehicle.position.clone();
 		game.lastSmokeSpawn = newTime;
 	}

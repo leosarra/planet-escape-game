@@ -1,6 +1,6 @@
-Particle = function (isSmoke, data) {
+Particle = function (isSmoke, holder) {
   var geom, mat;
-  this.data = data;
+  this.holder = holder;
   if (isSmoke) {
     geom = new THREE.IcosahedronGeometry(3, 0);
     mat = new THREE.MeshPhongMaterial({
@@ -46,11 +46,10 @@ Particle.prototype.explode = function (isSmoke, speedFactor, pos, color, scale) 
     ease = Power0.easeOut;
   }
   var speed = .6 + Math.random() * .2;
-  var data = this.data;
   var rotationSpeedFactor;
   if (isSmoke) {
     rotationSpeedFactor = 3
-    TweenMax.to(this.mesh.material, speed * 0.6, { opacity: 1 });
+    TweenMax.to(this.mesh.material, speed * 0.3, { opacity: 1 });
   } else {
     rotationSpeedFactor = 12
   }
@@ -60,15 +59,24 @@ Particle.prototype.explode = function (isSmoke, speedFactor, pos, color, scale) 
     x: targetX, y: targetY, delay: Math.random() * .1, ease: ease, onComplete: function () {
       if (_p) _p.remove(_this.mesh);
       _this.mesh.scale.set(1, 1, 1);
-      if (isSmoke) _this.data.smokePool.unshift(_this);
-      else _this.data.particlesPool.unshift(_this);
+      if (isSmoke) _this.holder.smokePool.unshift(_this);
+      else _this.holder.particlesPool.unshift(_this);
     }
   });
 }
 
-ParticlesHolder = function (data) {
+ParticlesHolder = function () {
   this.mesh = new THREE.Object3D();
-  this.data = data;
+  this.smokePool = [];
+  this.particlesPool = [];
+  for (var i = 0; i < 10; i++) {
+		var particle = new Particle(false, this);
+		this.particlesPool.push(particle);
+	}
+	for (var i = 0; i < 10; i++) {
+		var particle = new Particle(true, this);
+		this.smokePool.push(particle);
+	}
 }
 
 ParticlesHolder.prototype.spawnParticles = function (isSmoke, speedFactor, pos, density, color, scale) {
@@ -77,25 +85,24 @@ ParticlesHolder.prototype.spawnParticles = function (isSmoke, speedFactor, pos, 
   for (var i = 0; i < nPArticles; i++) {
     var particle;
     if (!isSmoke) {
-      if (this.data.particlesPool.length) {
-        particle = this.data.particlesPool.pop();
+      if (this.particlesPool.length) {
+        particle = this.particlesPool.pop();
       } else {
-        particle = new Particle(false, data);
+        particle = new Particle(false, this);
       }
     }
     else {
-      if (this.data.smokePool.length) {
-        particle = this.data.smokePool.pop();
+      if (this.smokePool.length) {
+        particle = this.smokePool.pop();
+        particle.mesh.material.opacity = 0;
       } else {
-        particle = new Particle(true, data);
+        particle = new Particle(true, this);
       }
     }
     this.mesh.add(particle.mesh);
     particle.mesh.visible = true;
-    var _this = this;
     particle.mesh.position.y = pos.y;
     particle.mesh.position.x = pos.x;
     particle.explode(isSmoke, speedFactor, pos, color, scale);
-    if (isSmoke) break;
   }
 }
