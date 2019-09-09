@@ -426,6 +426,7 @@ function createVehicle(vehicleType) {
 		game.vehicleAdjustmentRotationSpeedZ = 0.001;
 		game.vehicleAdjustmentRotationSpeedX = 0.005;
 		game.discountEnergyCost = 0.77;
+		game.shieldActivationCost = 0.15;
 	}
 	if (vehicleType == 3) {
 		var mtlLoader = new THREE.MTLLoader();
