@@ -1,251 +1,15 @@
 <html>
 
 <head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+	<link href="./css/game.css" rel="stylesheet">
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/three.js/108/three.js"></script>
-	<script type="text/javascript" src="	https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/gsap/2.1.3/TweenMax.min.js"></script>
 	<script type="text/javascript" src="./js/lib/OBJLoader.js"></script>
 	<script type="text/javascript" src="./js/lib/GLTFLoader.js"></script>
 	<script type="text/javascript" src="./js/lib/MTLLoader.js"></script>
 	<script type="text/javascript" src="./js/lib/stats.min.js"></script>
 	<script type="text/javascript" src="./js/lib/dat.gui.min.js"></script>
-
-    <style>
-        body { margin:0; }  
-        
-
-    .game-holder {
-	position: absolute;
-	width: 100%;
-	height: 100%;
-	background: -webkit-linear-gradient(#210f72, rgb(173, 210, 245));
-	background: linear-gradient(#210f72, rgb(173, 210, 245) );
-}
-
-.world {
-	position: absolute;
-	overflow: hidden;
-	width: 100%;
-	height: 100%;
-}
-
-.header {
-	position: center;
-	top: 8vh;
-	left: 0;
-	width: 100%;
-	text-align: left;
-	pointer-events: none;
-}
-
-.header h1 {
-	font-family: 'Playfair Display';
-	font-size: 4.5em;
-	line-height: 1;
-	margin: 0;
-	letter-spacing: -0.025em;
-	color: #e4e1dc  ;
-}
-
-.header h1 span {
-	font-size: 0.2em;
-	font-style: italic;
-	display: block;
-	margin: 0 0 -1.5em -7em;
-	letter-spacing: 0px;
-}
-
-.header h2 {
-	font-size: 0.585em;
-	margin: 0.25em 0;
-	white-space: nowrap;
-	text-indent: 1em;
-	letter-spacing: 1em;
-	text-transform: uppercase;
-	color: #d6483b;
-}
-
-.score {
-	width: 10%;
-	margin: 2em 0 0;
-	text-align: center;
-	white-space: nowrap;
-}
-
-.score__content {
-	position: relative;
-	display: inline-block;
-	padding: 0 1em;
-	vertical-align: top;
-}
-
-.score__content:nth-child(2) {
-	border-right: 1px solid #e4e1dc;
-	border-left: 1px solid #e4e1dc;
-}
-
-.score__content:nth-child(3) {
-	border-right: 1px solid #e4e1dc;
-}
-
-.score__label {
-	font-size: 9px;
-	position: relative;
-	margin: 0 0 0.5em 0;
-	text-align: center;
-	letter-spacing: 3px;
-	text-transform: uppercase;
-	color: #e4e1dc;
-}
-
-.score__value {
-	font-family: 'Playfair Display';
-	font-weight: bold;
-	color: #e4e1dc;
-}
-
-.score__value--level {
-	font-size: 26px;
-}
-
-.score__value--dist {
-	font-size: 30px;
-}
-
-.score__value--shield {
-	font-size: 15px;
-}
-
-.level-circle {
-	position: absolute;
-	left: 50%;
-	width: 46px;
-	margin: -37px 0 0 -23px;
-	-webkit-transform: rotate(-90deg);
-	transform: rotate(-90deg);
-}
-
-.score__value--energy {
-	position: relative;
-	width: 60px;
-	height: 8px;
-	margin-top: 20px;
-	border-radius: 3px;
-	background-color: #e4e1dc;
-    
-}
-
-.energy-bar {
-	position: absolute;
-	top: 0;
-	right: 0;
-	bottom: 0;
-	left: 0;
-	margin: 2px;
-	background-color: #f25346;
-	-webkit-animation-name: none;
-	animation-name: none;
-	-webkit-animation-duration: 150ms;
-	animation-duration: 150ms;
-	-webkit-animation-iteration-count: infinite;
-	animation-iteration-count: infinite;
-}
-
-.message {
-	font-weight: bold;
-	position: absolute;
-	left: 0;
-	width: 100%;
-	text-align: center;
-	text-transform: uppercase;
-	pointer-events: none;
-}
-
-.message--replay {
-	font-size: 1.25vw;
-	bottom:70vh;
-	text-indent: 0.5em;
-	letter-spacing: 0.5em;
-	color: orangered;
-	display: none;
-}
-.message--score {
-	font-size: 1.25vw;
-	bottom:65vh;
-	text-indent: 0.5em;
-	letter-spacing: 0.5em;
-	color: orangered;
-	display: none;
-}
-
-.message--instructions {
-	font-family: 'Playfair Display';
-	font-size: 0.85em;
-	bottom: 8vh;
-	letter-spacing: 0.2em;
-	color: #68c3c0;
-}
-
-.message--instructions span {
-	display: block;
-	color: #d6483b;
-	white-space: nowrap;
-}
-
-#scoreboard_header {
-	font-family: 'Playfair Display';
-	font-weight: bold;
-	color: #e4e1dc;
-	font-size: 20px;
-	margin-left: 2%;
-	font-weight: bold;
-	position: absolute;
-	left: 0;
-	width: 100%;
-	text-align: left;
-	text-transform: uppercase;
-	pointer-events: none;
-}
-
-#scoreboard {
-	font-family: 'Playfair Display';
-	font-weight: bold;
-	color: #e4e1dc;
-	font-size: 12px;
-	margin-left: 2%;
-	font-weight: bold;
-	position: absolute;
-	left: 0;
-	width: 100%;
-	text-align: left;
-	text-transform: uppercase;
-	pointer-events: none;
-}
-
-@-webkit-keyframes blinking {
-	0% { opacity: 1; }
-	50% { opacity: 0; }
-	100% { opacity: 1; }
-}
-
-@keyframes blinking {
-	0% { opacity: 1; }
-	50% { opacity: 0; }
-	100% { opacity: 1; }
-}
-
-@media screen and (max-width: 40em) {
-	.header {
-		font-size: 0.75em;
-		top: 6.5em;
-	}
-	.header h2 {
-		letter-spacing: 0.65em;
-	}
-}
-
-
-
-</style>
 	<script type="text/javascript" src="./js/game/enemyMeshStorage.js"></script>
 	<script type="text/javascript" src="./js/game/particle.js"></script>
 	<script type="text/javascript" src="./js/game/models.js"></script>
@@ -276,7 +40,7 @@
 					<div class="score__content" id="energy">
 						<div class="score__label">energy</div>
 						<div class="score__value score__value--energy" id="energyValue">
-							<div class="energy-bar" id="energyBar"></div>
+							<div class="energy" id="energyBar"></div>
 						</div>
 					</div>
 					<div class="score__content" id="shield">
@@ -285,9 +49,14 @@
 							Ready
 						</div>
 					</div>
+					<div class="msg__rules msg--instructions" id="instructions">
+						Press 'A' to attack<br/> Press 'S' to activate/disable shield
+						<br/> Don't hit the enemies and don't run out of energy!
+					</div>
 					<div class = "score__content" id = "scoreboard_header"><br/>Scoreboard<br/>
 						<div class = "score__content" id = "scoreboard"></div></div>
 				</div>
+
 
 			</div>
 			<div class="message message--replay" id="replayMessage">Click to try again.</div><br/>
