@@ -128,7 +128,7 @@ function handleShield(deltaTime) {
 	} else if (game.hasShield == false && game.bubble.material.opacity > 0) {
 		game.bubble.material.opacity -= 0.01;
 	}
-	if (game.bubble.material.opacity<0) game.bubble.material.opacity= 0;
+	if (game.bubble.material.opacity < 0) game.bubble.material.opacity = 0;
 }
 
 function init() {
@@ -194,11 +194,11 @@ function initHTMLUi() {
 }
 function initDatUI() {
 	options.speedIncrPerLevel = game.levelSpeedIncrement;
-	options.speedIncrOverTime = game.speedIncrement*100;
+	options.speedIncrOverTime = game.speedIncrement * 100;
 	options.energyDecayPerFrame = game.energyDecayPerFrame;
 	options.energyDecayIncrPerLevel = game.energyDecayIncrPerLevel;
 	stats = new Stats();
-	gui = new dat.GUI({width:280});
+	gui = new dat.GUI({ width: 280 });
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3: 2, TARDIS: 3 });
 	gui.add(options, 'paused');
@@ -217,8 +217,8 @@ function initDatUI() {
 	});
 	gui.add(options, 'reset');
 	var debug = gui.addFolder("Debug");
-	debug.add(options,'speedIncrOverTime');
-	debug.add(options,'speedIncrPerLevel');
+	debug.add(options, 'speedIncrOverTime');
+	debug.add(options, 'speedIncrPerLevel');
 	debug.add(options, 'energyDecayPerFrame')
 	debug.add(options, 'energyDecayIncrPerLevel');
 	debug.add(options, 'noFireCost').onChange(function () {
@@ -242,12 +242,12 @@ function initDatUI() {
 	});
 }
 
-function applySettings(){
-	if (options.speedIncrOverTime >=0 && (options.speedIncrOverTime/100) != game.speedIncrement) game.speedIncrement = options.speedIncrOverTime/100;
-	if (options.speedIncrPerLevel >=0 && options.speedIncrPerLevel != game.levelSpeedIncrement) game.levelSpeedIncrement = options.speedIncrPerLevel;
-	if (options.energyDecayPerFrame>= 0 && options.energyDecayPerFrame!= game.energyDecayPerFrame) game.energyDecayPerFrame = options.energyDecayPerFrame;
-	if (options.energyDecayIncrPerLevel>= 0 && options.energyDecayIncrPerLevel!= game.energyDecayIncrPerLevel) game.energyDecayIncrPerLevel = options.energyDecayIncrPerLevel;
-	
+function applySettings() {
+	if (options.speedIncrOverTime >= 0 && (options.speedIncrOverTime / 100) != game.speedIncrement) game.speedIncrement = options.speedIncrOverTime / 100;
+	if (options.speedIncrPerLevel >= 0 && options.speedIncrPerLevel != game.levelSpeedIncrement) game.levelSpeedIncrement = options.speedIncrPerLevel;
+	if (options.energyDecayPerFrame >= 0 && options.energyDecayPerFrame != game.energyDecayPerFrame) game.energyDecayPerFrame = options.energyDecayPerFrame;
+	if (options.energyDecayIncrPerLevel >= 0 && options.energyDecayIncrPerLevel != game.energyDecayIncrPerLevel) game.energyDecayIncrPerLevel = options.energyDecayIncrPerLevel;
+
 }
 
 function resetGame() {
@@ -352,7 +352,7 @@ function startAudio() {
 		sound.setLoop(true);
 		sound.setVolume(1);
 		sound.play();
-		audioStarted= true;
+		audioStarted = true;
 		console.log("audio started");
 	});
 }
@@ -613,7 +613,7 @@ function loop() {
 	stats.begin();
 	newTime = new Date().getTime();
 	deltaTime = newTime - oldTime;
-	if (deltaTime>1000) deltaTime=1;
+	if (deltaTime > 1000) deltaTime = 1;
 	game.deltaTime = deltaTime;
 	oldTime = newTime;
 	var meshesReady = enemyMeshStorage.isReady();
