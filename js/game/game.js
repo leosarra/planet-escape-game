@@ -633,7 +633,7 @@ function loop() {
 		}
 		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
 			game.coinLastSpawn = Math.floor(game.distance);
-			bonusHolder.spawnCoins();
+			bonusHolder.spawnBonuses();
 		}
 
 		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForEnemiesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.enemiesLastSpawn)) {

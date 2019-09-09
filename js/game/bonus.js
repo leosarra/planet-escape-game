@@ -1,4 +1,4 @@
-Coin = function () {
+Bonus = function () {
 	var geom = new THREE.OctahedronGeometry(5, 0);
 	var mat = new THREE.MeshPhongMaterial({
 		color: 0x009999,
@@ -13,85 +13,85 @@ Coin = function () {
 	this.dist = 0;
 }
 
-BonusHolder = function (game, particlesHolder, nCoins) {
+BonusHolder = function (game, particlesHolder, quantity) {
 	this.particlesHolder = particlesHolder;
 	this.mesh = new THREE.Object3D();
-	this.coinsInUse = [];
-	this.coinsPool = [];
+	this.bonusesInUse = [];
+	this.bonusesPool = [];
 	this.game = game;
-	for (var i = 0; i < nCoins; i++) {
-		var coin = new Coin();
-		this.coinsPool.push(coin);
+	for (var i = 0; i < quantity; i++) {
+		var bonus = new Bonus();
+		this.bonusesPool.push(bonus);
 	}
 
 }
 
-BonusHolder.prototype.spawnCoins = function () {
+BonusHolder.prototype.spawnBonuses = function () {
 
-	var nCoins = 1 + Math.floor(Math.random() * 7);
-	var d = 700 + 100 + (-1 + Math.random() * 2) * 120;
-	var amplitude = 8 + Math.round(Math.random() * 7);
-	var goldCoinSpawned = false;
-	for (var i = 0; i < nCoins; i++) {
-		var coin;
-		if (this.coinsPool.length) {
-			coin = this.coinsPool.pop();
+	var quantity = 1 + Math.floor(Math.random() * 7);
+	var d = Math.floor(Math.random() * (923 - 730 + 1)) + 725;
+	var a = 8 + Math.round(Math.random() * 7);
+	var goldBonusSpawned = false;
+	for (var i = 0; i < quantity; i++) {
+		var bonus;
+		if (this.bonusesPool.length) {
+			bonus = this.bonusesPool.pop();
 		} else {
-			coin = new Coin();
+			bonus = new Bonus();
 		}
 		var color = 0x009999;
 		var rnd = Math.random();
 
-		if (rnd < 0.01 && !goldCoinSpawned) {
-			coin.type = 0;
+		if (rnd < 0.01 && !goldBonusSpawned) {
+			bonus.type = 0;
 			color = 0xFFD700;
-			goldCoinSpawned = true;
-		} else if (rnd < 0.15 && !goldCoinSpawned) {
-			coin.type = 1;
+			goldBonusSpawned = true;
+		} else if (rnd < 0.15 && !goldBonusSpawned) {
+			bonus.type = 1;
 			color = 0x38761D;
 		} else {
-			coin.type = 2;
+			bonus.type = 2;
 		}
-		coin.mesh.material.color = new THREE.Color(color);
-		coin.mesh.material.needsUpdate = true;
-		this.mesh.add(coin.mesh);
-		this.coinsInUse.push(coin);
-		coin.angle = - (i * 0.02);
-		coin.distance = d + Math.cos(i * .5) * amplitude;
-		coin.mesh.position.y = -700 + Math.sin(coin.angle) * coin.distance;
-		coin.mesh.position.x = Math.cos(coin.angle) * coin.distance;
+		bonus.mesh.material.color = new THREE.Color(color);
+		bonus.mesh.material.needsUpdate = true;
+		this.mesh.add(bonus.mesh);
+		this.bonusesInUse.push(bonus);
+		bonus.angle = - (i * 0.02);
+		bonus.distance = d + Math.cos(i * .5) * a;
+		bonus.mesh.position.y = -700 + Math.sin(bonus.angle) * bonus.distance;
+		bonus.mesh.position.x = Math.cos(bonus.angle) * bonus.distance;
 	}
 }
 
 BonusHolder.prototype.animateElements = function () {
-	for (var i = 0; i < this.coinsInUse.length; i++) {
-		var coin = this.coinsInUse[i];
-		if (coin.exploding) continue;
+	for (var i = 0; i < this.bonusesInUse.length; i++) {
+		var bonus = this.bonusesInUse[i];
+		if (bonus.exploding) continue;
 		adj = this.game.baseSpeed * this.game.deltaTime * 0.5;
 		if (Math.abs(adj) > 0.2) adj = 0.2;
-		coin.angle += adj;
-		if (coin.angle > Math.PI * 2) coin.angle -= Math.PI * 2;
-		coin.mesh.position.y = -700 + Math.sin(coin.angle) * coin.distance;
-		coin.mesh.position.x = Math.cos(coin.angle) * coin.distance;
-		coin.mesh.rotation.z += Math.random() * .005 * game.deltaTime;
-		coin.mesh.rotation.y += Math.random() * .005 * game.deltaTime;
+		bonus.angle += adj;
+		if (bonus.angle > Math.PI * 2) bonus.angle -= Math.PI * 2;
+		bonus.mesh.position.y = -700 + Math.sin(bonus.angle) * bonus.distance;
+		bonus.mesh.position.x = Math.cos(bonus.angle) * bonus.distance;
+		bonus.mesh.rotation.z += Math.random() * .005 * game.deltaTime;
+		bonus.mesh.rotation.y += Math.random() * .005 * game.deltaTime;
 		if (this.game.vehicle == undefined) return;
 
-		var diffPos = this.game.vehicle.position.clone().sub(coin.mesh.position.clone());
+		var diffPos = this.game.vehicle.position.clone().sub(bonus.mesh.position.clone());
 		var d = diffPos.length();
 		if (d < 15) {
-			this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
-			this.mesh.remove(coin.mesh);
+			this.bonusesPool.unshift(this.bonusesInUse.splice(i, 1)[0]);
+			this.mesh.remove(bonus.mesh);
 			var energyBonus = 5;
-			if (coin.type == 1) energyBonus = energyBonus * 2;
-			else if (coin.type == 0) energyBonus = 100;
+			if (bonus.type == 1) energyBonus = energyBonus * 2;
+			else if (bonus.type == 0) energyBonus = 100;
 			this.game.energy += energyBonus;
 			if (this.game.energy > 100) this.game.energy = 100;
-			this.particlesHolder.spawnParticles(false, 0, coin.mesh.position.clone(), 5, coin.mesh.material.color, .8);
+			this.particlesHolder.spawnParticles(false, 0, bonus.mesh.position.clone(), 5, bonus.mesh.material.color, .8);
 			i--;
-		} else if (coin.angle > Math.PI || coin.mesh.position.x < -600) {
-			this.coinsPool.unshift(this.coinsInUse.splice(i, 1)[0]);
-			this.mesh.remove(coin.mesh);
+		} else if (bonus.angle > Math.PI || bonus.mesh.position.x < -600) {
+			this.bonusesPool.unshift(this.bonusesInUse.splice(i, 1)[0]);
+			this.mesh.remove(bonus.mesh);
 			i--;
 		}
 	}
