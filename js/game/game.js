@@ -12,6 +12,7 @@ var particlesHolder;
 var stats;
 var game, scoreboard;
 var paused = false;
+var audioStarted = false;
 var Colors = {
 	red: 0xf25346,
 	green: 0x38761D,
@@ -269,7 +270,7 @@ function resetGame() {
 	scoreboard.energy.style.right = (100 - game.energy) + "%";
 	scoreboard.energy.style.backgroundColor = (game.energy < 50) ? "#f25346" : "#68c3c0";
 	scoreboard.shield.innerHTML = "Ready";
-	if (typeof (sound) != 'undefined') {
+	if (typeof (sound) != 'undefined' && audioStarted) {
 		sound.stop();
 		if (options.audio) sound.play();
 	}
@@ -323,7 +324,8 @@ function startAudio() {
 		sound.setLoop(true);
 		sound.setVolume(1);
 		sound.play();
-
+		audioStarted= true;
+		console.log("audio started");
 	});
 }
 
