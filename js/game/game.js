@@ -37,7 +37,6 @@ var options = {
 	reset: function () {
 		removeShield();
 		resetGame();
-		createVehicle(vehicleType);
 	}
 };
 
@@ -133,7 +132,6 @@ function init() {
 	resetGame();
 	createScene();
 	createLights();
-	createVehicle(vehicleType);
 	createTerrain();
 	createSky();
 	fillParticlesPool();
@@ -151,12 +149,6 @@ function initMeshStorage() {
 
 function setupPlayerInputListener() {
 	document.addEventListener('mousemove', handleMouseMove, false);
-	document.addEventListener('mouseup', function () {
-		if (game.showReplay) {
-			resetGame();
-			createVehicle(vehicleType);
-		}
-	}, false)
 	document.addEventListener('keyup', (e) => {
 		if (e.which == 83 && game.showReplay) {
 			var name = window.prompt("Enter your name");
@@ -173,7 +165,7 @@ function setupPlayerInputListener() {
 			else if (vehicleType == 1) vehPos.x += 3;
 			if (!options.noFireCost) game.energy -= 5;
 			projectilesHolder.spawnParticles(vehPos);
-		}
+		} else if (e.which == 82 && game.showReplay) resetGame();
 	});
 }
 function initUI() {
@@ -184,7 +176,6 @@ function initUI() {
 	gui.add(options, 'noFireCost').onChange(function () {
 		removeShield();
 		resetGame();
-		createVehicle(vehicleType);
 	});
 	gui.add(options, 'paused');
 	gui.add(options, "audio").onChange(function () {
@@ -270,6 +261,7 @@ function resetGame() {
 	scoreboard.energy.style.right = (100 - game.energy) + "%";
 	scoreboard.energy.style.backgroundColor = (game.energy < 50) ? "#f25346" : "#68c3c0";
 	scoreboard.shield.innerHTML = "Ready";
+	createVehicle(vehicleType);
 	if (typeof (sound) != 'undefined' && audioStarted) {
 		sound.stop();
 		if (options.audio) sound.play();
@@ -584,6 +576,7 @@ function loop() {
 	stats.begin();
 	newTime = new Date().getTime();
 	deltaTime = newTime - oldTime;
+	if (deltaTime>1000) deltaTime=1;
 	game.deltaTime = deltaTime;
 	oldTime = newTime;
 	var meshesReady = enemyMeshStorage.isReady();
@@ -628,7 +621,6 @@ function loop() {
 		if (game.vehicle != undefined) scene.remove(game.vehicle);
 		removeShield();
 		resetGame();
-		createVehicle(vehicleType);
 	}
 	if (meshesReady && !game.firstMeshesSpawned) game.firstMeshesSpawned = true;
 	handleRotation(deltaTime);
