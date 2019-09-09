@@ -203,6 +203,7 @@ function initDatUI() {
 		}
 		else {
 			if (typeof (sound) != 'undefined') sound.stop();
+			audioStarted = false;
 		}
 	});
 	gui.add(options, 'reset');
