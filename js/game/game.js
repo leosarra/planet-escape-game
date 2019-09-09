@@ -229,7 +229,7 @@ function resetGame() {
 	game.targetBaseSpeed = .00035;
 	game.vehicleInitialSpeed = .00035;
 	game.baseHeigth = 100;
-	game.speedIncrement = .000004;
+	game.speedIncrement = .0000027;
 	game.levelSpeedIncrement = .000040;
 	game.coinLastSpawn = 0;
 	game.enemiesLastSpawn = 0;
@@ -245,7 +245,7 @@ function resetGame() {
 	game.distanceSinceStartLevel = 0;
 	game.bubble = undefined;
 	game.lastSmokeSpawn = 0;
-	game.shieldActivationCost = 0.33;
+	game.shieldActivationCost = 0.20;
 	game.shieldActiveCost = 0.0015;
 	game.shieldCooldown = 0;
 	game.gameOver = false;
