@@ -37,7 +37,10 @@ var options = {
 	reset: function () {
 		removeShield();
 		resetGame();
-	}
+	},
+	speedIncrOverTime: -1,
+	speedIncrForLevel: -1,
+	noShieldCost: false,
 };
 
 function createScene() {
@@ -75,7 +78,7 @@ function onPauseButton() {
 
 function addShield() {
 	if (game.shieldCooldown != 0) return;
-	game.energy *= (1 - game.shieldActivationCost);
+	if (!options.noShieldCost) game.energy *= (1 - game.shieldActivationCost);
 	if (game.bubble != undefined) {
 		game.hasShield = true;
 		return;
@@ -127,9 +130,10 @@ function handleShield(deltaTime) {
 }
 
 function init() {
-	initUI();
+	initHTMLUi();
 	initMeshStorage();
 	resetGame();
+	initDatUI();
 	createScene();
 	createLights();
 	createTerrain();
@@ -168,15 +172,26 @@ function setupPlayerInputListener() {
 		} else if (e.which == 82 && game.showReplay) resetGame();
 	});
 }
-function initUI() {
+function initHTMLUi() {
+	scoreboard = {
+		level: document.getElementById('levelValue'),
+		distance: document.getElementById('distValue'),
+		energy: document.getElementById('energyBar'),
+		shield: document.getElementById('shieldValue'),
+		replay: document.getElementById('replayMessage'),
+		scoreMessage: document.getElementById('scoreboardMessage'),
+		scoreboard: document.getElementById('scoreboard'),
+		scoreboard_header: document.getElementById('scoreboard_header'),
+	}
+}
+function initDatUI() {
+	options.speedIncrForLevel = game.levelSpeedIncrement;
+	options.speedIncrOverTime = game.speedIncrement*100;
+
 	stats = new Stats();
-	gui = new dat.GUI();
+	gui = new dat.GUI({width:280});
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3: 2, TARDIS: 3 });
-	gui.add(options, 'noFireCost').onChange(function () {
-		removeShield();
-		resetGame();
-	});
 	gui.add(options, 'paused');
 	gui.add(options, "audio").onChange(function () {
 
@@ -191,7 +206,17 @@ function initUI() {
 		}
 	});
 	gui.add(options, 'reset');
-
+	var debug = gui.addFolder("Debug");
+	debug.add(options,'speedIncrOverTime');
+	debug.add(options,'speedIncrForLevel');
+	debug.add(options, 'noFireCost').onChange(function () {
+		removeShield();
+		resetGame();
+	});
+	debug.add(options, 'noShieldCost').onChange(function () {
+		removeShield();
+		resetGame();
+	});
 	var perfFolder = gui.addFolder("Performance");
 	var perfLi = document.createElement("li");
 	stats.domElement.height = '48px';
@@ -203,18 +228,13 @@ function initUI() {
 		if (perfLi.style.height != "auto") perfLi.style.height = "auto";
 		else perfLi.style.height = "";
 	});
-
-	scoreboard = {
-		level: document.getElementById('levelValue'),
-		distance: document.getElementById('distValue'),
-		energy: document.getElementById('energyBar'),
-		shield: document.getElementById('shieldValue'),
-		replay: document.getElementById('replayMessage'),
-		scoreMessage: document.getElementById('scoreboardMessage'),
-		scoreboard: document.getElementById('scoreboard'),
-		scoreboard_header: document.getElementById('scoreboard_header'),
-	}
 }
+
+function applySettings(){
+	if (options.speedIncrOverTime >=0 && (options.speedIncrOverTime/100) != game.speedIncrement) game.speedIncrement = options.speedIncrOverTime/100;
+	if (options.speedIncrForLevel >=0 && options.speedIncrForLevel != game.levelSpeedIncrement) game.levelSpeedIncrement = options.speedIncrForLevel;
+}
+
 function resetGame() {
 	if (game == undefined) {
 		game = {};
@@ -234,7 +254,7 @@ function resetGame() {
 	game.coinLastSpawn = 0;
 	game.enemiesLastSpawn = 0;
 	game.speedLastUpdate = 0;
-	game.distanceForCoinsSpawn = 2;
+	game.distanceForBonusesSpawn = 2;
 	game.distanceForEnemiesSpawn = 2;
 	game.distanceForSpeedUpdate = 2;
 	game.distance = 0;
@@ -584,6 +604,7 @@ function loop() {
 		requestAnimationFrame(loop);
 		return;
 	}
+	applySettings();
 
 	if (!game.gameOver) {
 		if (game.distanceSinceStartLevel > (game.levelDistance + 5 * game.level)) {
@@ -593,8 +614,7 @@ function loop() {
 			game.baseSpeed = 0;
 			game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement * game.level;
 		}
-
-		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForCoinsSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
+		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
 			game.coinLastSpawn = Math.floor(game.distance);
 			bonusHolder.spawnCoins();
 		}
