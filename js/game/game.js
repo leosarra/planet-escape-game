@@ -110,7 +110,7 @@ function disableShieldImmunity() {
 }
 
 function handleShieldFade(deltaTime) {
-	if (game.bubble == undefined || game.gameOver) return;
+	if (game.bubble == undefined) return;
 	if (game.shieldCooldown != 0) {
 		game.shieldCooldown = game.shieldCooldown - deltaTime;
 		if (game.shieldCooldown < 0) game.shieldCooldown = 0;
@@ -123,6 +123,7 @@ function handleShieldFade(deltaTime) {
 	} else if (game.hasShield == false && game.bubble.material.opacity > 0) {
 		game.bubble.material.opacity -= 0.01;
 	}
+	if (game.bubble.material.opacity<0) game.bubble.material.opacity= 0;
 }
 
 function init() {
@@ -159,7 +160,6 @@ function setupPlayerInputListener() {
 		if (e.which == 83 && game.showReplay) {
 			var name = window.prompt("Enter your name");
 			if (name === "") alert("Name can't be left empty");
-			console.log("adding");
 			addScore(name, Math.floor(game.distance * 40));
 			game.scoreAdded = true;
 			printScoreboard(scoreboard.scoreboard);
@@ -181,6 +181,7 @@ function initUI() {
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3: 2, TARDIS: 3 });
 	gui.add(options, 'noFireCost').onChange(function () {
+		removeShield();
 		resetGame();
 		createVehicle(vehicleType);
 	});
@@ -539,7 +540,10 @@ function handleEnergy(deltaTime) {
 	if (game.level > 1) energyMinus = energyMinus * (game.level / 3)
 	if (game.hasShield) energyMinus += game.shieldActiveCost;
 	game.energy = game.energy - energyMinus;
-	if (game.energy <= 0) game.gameOver = true;
+	if (game.energy <= 0) {
+		game.gameOver = true;
+		if (game.hasShield) disableShieldImmunity();
+	}
 }
 
 function handleGameStatus(deltaTime) {
