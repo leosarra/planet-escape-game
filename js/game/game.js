@@ -109,9 +109,9 @@ function disableShieldImmunity() {
 	game.shieldCooldown = 10000;
 }
 
-function handleShieldFade(deltaTime) {
+function handleShield(deltaTime) {
 	if (game.bubble == undefined) return;
-	if (game.shieldCooldown != 0) {
+	if (game.shieldCooldown != 0 && !game.gameOver) {
 		game.shieldCooldown = game.shieldCooldown - deltaTime;
 		if (game.shieldCooldown < 0) game.shieldCooldown = 0;
 	}
@@ -632,7 +632,7 @@ function loop() {
 	handleRotation(deltaTime);
 	handleSpeed(deltaTime);
 	handleEnergy(deltaTime);
-	handleShieldFade(deltaTime);
+	handleShield(deltaTime);
 	handleSmoke();
 	handleGameStatus(deltaTime);
 	sky.moveClouds();
