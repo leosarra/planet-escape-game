@@ -39,7 +39,9 @@ var options = {
 		resetGame();
 	},
 	speedIncrOverTime: -1,
-	speedIncrForLevel: -1,
+	speedIncrPerLevel: -1,
+	energyDecayPerFrame: -1,
+	energyDecayIncrPerLevel: -1,
 	noShieldCost: false,
 };
 
@@ -156,7 +158,13 @@ function setupPlayerInputListener() {
 	document.addEventListener('keyup', (e) => {
 		if (e.which == 83 && game.showReplay) {
 			var name = window.prompt("Enter your name");
-			if (name === "") alert("Name can't be left empty");
+			if (name == undefined) {
+				return;
+			}
+			if (name === "") {
+				alert("Name can't be left empty");
+				return;
+			}
 			addScore(name, Math.floor(game.distance * 40));
 			game.scoreAdded = true;
 			printScoreboard(scoreboard.scoreboard);
@@ -185,9 +193,10 @@ function initHTMLUi() {
 	}
 }
 function initDatUI() {
-	options.speedIncrForLevel = game.levelSpeedIncrement;
+	options.speedIncrPerLevel = game.levelSpeedIncrement;
 	options.speedIncrOverTime = game.speedIncrement*100;
-
+	options.energyDecayPerFrame = game.energyDecayPerFrame;
+	options.energyDecayIncrPerLevel = game.energyDecayIncrPerLevel;
 	stats = new Stats();
 	gui = new dat.GUI({width:280});
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
@@ -209,7 +218,9 @@ function initDatUI() {
 	gui.add(options, 'reset');
 	var debug = gui.addFolder("Debug");
 	debug.add(options,'speedIncrOverTime');
-	debug.add(options,'speedIncrForLevel');
+	debug.add(options,'speedIncrPerLevel');
+	debug.add(options, 'energyDecayPerFrame')
+	debug.add(options, 'energyDecayIncrPerLevel');
 	debug.add(options, 'noFireCost').onChange(function () {
 		removeShield();
 		resetGame();
@@ -233,7 +244,10 @@ function initDatUI() {
 
 function applySettings(){
 	if (options.speedIncrOverTime >=0 && (options.speedIncrOverTime/100) != game.speedIncrement) game.speedIncrement = options.speedIncrOverTime/100;
-	if (options.speedIncrForLevel >=0 && options.speedIncrForLevel != game.levelSpeedIncrement) game.levelSpeedIncrement = options.speedIncrForLevel;
+	if (options.speedIncrPerLevel >=0 && options.speedIncrPerLevel != game.levelSpeedIncrement) game.levelSpeedIncrement = options.speedIncrPerLevel;
+	if (options.energyDecayPerFrame>= 0 && options.energyDecayPerFrame!= game.energyDecayPerFrame) game.energyDecayPerFrame = options.energyDecayPerFrame;
+	if (options.energyDecayIncrPerLevel>= 0 && options.energyDecayIncrPerLevel!= game.energyDecayIncrPerLevel) game.energyDecayIncrPerLevel = options.energyDecayIncrPerLevel;
+	
 }
 
 function resetGame() {
@@ -243,6 +257,7 @@ function resetGame() {
 	if (typeof (game.vehicle) != 'undefined') scene.remove(game.vehicle);
 	game.hasShield = false;
 	game.energyDecayPerFrame = 0.0015;
+	game.energyDecayIncrPerLevel = .000040;
 	game.level = 1;
 	game.energy = 100;
 	game.firstMeshesSpawned = false;
@@ -553,7 +568,7 @@ function handleSpeed(deltaTime) {
 
 function handleEnergy(deltaTime) {
 	var energyMinus = game.energyDecayPerFrame * deltaTime * game.discountEnergyCost;
-	if (game.level > 1) energyMinus = energyMinus * (game.level / 3)
+	if (game.level > 1) energyMinus = energyMinus * (game.level * game.energyDecayIncrPerLevel);
 	if (game.hasShield) energyMinus += game.shieldActiveCost;
 	game.energy = game.energy - energyMinus;
 	if (game.energy <= 0) {
