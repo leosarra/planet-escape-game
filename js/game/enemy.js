@@ -122,6 +122,7 @@ EnemiesHolder.prototype.animateEnemies = function () {
       }
     } else if (enemy.type == 2) {
       enemy.sateliteDisc.rotation.x += 0.05;
+      enemy.sateliteTopPart.rotation.x += 0.025;
     } else if (enemy.type == 3) {
 
       if (enemy.wingLeft.rotation.x > 1) enemy.decreaseWings = true
