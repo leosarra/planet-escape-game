@@ -32,6 +32,15 @@ BonusHolder.prototype.spawnBonuses = function () {
 	var d = Math.floor(Math.random() * (923 - 730 + 1)) + 725;
 	var a = 8 + Math.round(Math.random() * 7);
 	var goldBonusSpawned = false;
+	var goldBonusPos = -1;
+
+	for (var i = 0; i < quantity; i++) {
+		if (Math.random() < 0.01) {
+			goldBonusSpawned = true;
+			goldBonusPos = i;
+			break;
+		}
+	}
 	for (var i = 0; i < quantity; i++) {
 		var bonus;
 		if (this.bonusesPool.length) {
@@ -40,13 +49,11 @@ BonusHolder.prototype.spawnBonuses = function () {
 			bonus = new Bonus();
 		}
 		var color = 0x009999;
-		var rnd = Math.random();
 
-		if (rnd < 0.01 && !goldBonusSpawned) {
+		if (goldBonusSpawned && goldBonusPos == i) {
 			bonus.type = 0;
 			color = 0xFFD700;
-			goldBonusSpawned = true;
-		} else if (rnd < 0.15 && !goldBonusSpawned) {
+		} else if (Math.random() < 0.15 && !goldBonusSpawned) {
 			bonus.type = 1;
 			color = 0x38761D;
 		} else {
