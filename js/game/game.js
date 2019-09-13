@@ -87,7 +87,7 @@ function addShield() {
 	}
 	var geom = new THREE.IcosahedronGeometry(13, 0);
 	var mat = new THREE.MeshPhongMaterial({
-		color: 0xF5986E,
+		color: Colors.pink,
 		shininess: 0,
 		specular: 0xffffff,
 		transparent: true, opacity: 0,
@@ -358,9 +358,9 @@ function startAudio() {
 }
 
 function createLights() {
-	hemisphereLight = new THREE.HemisphereLight(0xaaaaaa, 0x000000, .9)
+	hemisphereLight = new THREE.HemisphereLight(0xF0F8FF, 0x000000, .9)
 	shadowLight = new THREE.DirectionalLight(0xffffff, .9);
-	ambientLight = new THREE.AmbientLight(0xdc8874, .5);
+	ambientLight = new THREE.AmbientLight(Colors.pink, .5);
 	shadowLight.position.set(150, 350, 350);
 	shadowLight.castShadow = true;
 	shadowLight.shadow.camera.left = -400;
