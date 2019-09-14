@@ -167,7 +167,7 @@ EnemiesHolder.prototype.animateEnemies = function () {
       this.mesh.remove(enemy.mesh);
       if (this.game.hasShield) {
         this.particlesHolder.spawnParticles(false, 0, game.vehicle.position, 5, Colors.green, 3);
-        disableShieldImmunity();
+        disableShieldImmunity(true);
       }
       else {
         this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position.clone(), 15, Colors.red, 3);

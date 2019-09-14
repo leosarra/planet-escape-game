@@ -108,10 +108,11 @@ function removeShield() {
 	}
 }
 
-function disableShieldImmunity() {
+function disableShieldImmunity(instant_effect) {
 	if (!game.hasShield) return;
 	game.hasShield = false;
 	game.shieldCooldown = 10000;
+	if (instant_effect && game.bubble!=undefined) game.bubble.material.opacity = 0;
 }
 
 function handleShield(deltaTime) {
@@ -170,7 +171,7 @@ function setupPlayerInputListener() {
 			printScoreboard(scoreboard.scoreboard);
 		} else if (e.which == 83 && !game.showReplay) {
 			if (!game.hasShield) addShield();
-			else disableShieldImmunity();
+			else disableShieldImmunity(false);
 		} else if (e.which == 65 && !game.gameOver && game.vehicle != undefined && vehicleType != 3) {
 			if (vehicleType == 0 || vehicleType == 2) {
 				var cannon1 = game.vehicle.getObjectByName("cannonRight");
@@ -597,7 +598,7 @@ function handleEnergy(deltaTime) {
 	game.energy = game.energy - energyMinus;
 	if (game.energy <= 0) {
 		game.gameOver = true;
-		if (game.hasShield) disableShieldImmunity();
+		if (game.hasShield) disableShieldImmunity(false);
 	}
 }
 
