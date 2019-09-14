@@ -172,11 +172,35 @@ function setupPlayerInputListener() {
 			if (!game.hasShield) addShield();
 			else disableShieldImmunity();
 		} else if (e.which == 65 && !game.gameOver && game.vehicle != undefined && vehicleType != 3) {
-			var vehPos = game.vehicle.position.clone();
-			if (vehicleType == 0) vehPos.x += 12;
-			else if (vehicleType == 1) vehPos.x += 3;
+			if (vehicleType == 0 || vehicleType == 2) {
+				var cannon1 = game.vehicle.getObjectByName("cannonRight");
+				var cannon2 = game.vehicle.getObjectByName("cannonLeft");
+				var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
+				pos1.x +=2.3;
+				var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
+				pos2.x +=2.3;
+				projectilesHolder.spawnParticles(pos1);
+				projectilesHolder.spawnParticles(pos2);
+			}
+			else if (vehicleType == 1) {
+				var cannon1 = game.vehicle.getObjectByName("lowerCannonRight");
+				var cannon2 = game.vehicle.getObjectByName("upperCannonRight");
+				var cannon3 = game.vehicle.getObjectByName("lowerCannonLeft");
+				var cannon4 = game.vehicle.getObjectByName("upperCannonLeft");
+				var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
+				pos1.x +=1.5;
+				var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
+				pos2.x +=1.5;
+				var pos3 = cannon3.getWorldPosition(game.vehicle.position.clone());
+				pos3.x +=1.5;
+				var pos4 = cannon4.getWorldPosition(game.vehicle.position.clone());
+				pos4.x +=1.5;
+				projectilesHolder.spawnParticles(pos1);
+				projectilesHolder.spawnParticles(pos2);
+				projectilesHolder.spawnParticles(pos3);
+				projectilesHolder.spawnParticles(pos4);
+			}
 			if (!options.noFireCost) game.energy -= 5;
-			projectilesHolder.spawnParticles(vehPos);
 		} else if (e.which == 82 && game.showReplay) resetGame();
 	});
 }
