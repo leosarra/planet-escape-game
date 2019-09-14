@@ -22,7 +22,7 @@ EnemyMeshStorage.prototype.load = function () {
 		function (error) {
 			console.log('An error happened');
 		});
-	gltfLoader.load('models/satelite.glb',
+	gltfLoader.load('models/satellite.glb',
 		function (gltf) {
 			gltf.scene.traverse(function (child) {
 				if (child instanceof THREE.Mesh) {
