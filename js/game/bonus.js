@@ -4,7 +4,6 @@ Bonus = function () {
 		color: 0x009999,
 		shininess: 0,
 		specular: 0xffffff,
-
 		flatShading: true
 	});
 	this.mesh = new THREE.Mesh(geom, mat);
@@ -73,7 +72,6 @@ BonusHolder.prototype.spawnBonuses = function () {
 BonusHolder.prototype.animateElements = function () {
 	for (var i = 0; i < this.bonusesInUse.length; i++) {
 		var bonus = this.bonusesInUse[i];
-		if (bonus.exploding) continue;
 		adj = this.game.baseSpeed * this.game.deltaTime * 0.5;
 		if (Math.abs(adj) > 0.2) adj = 0.2;
 		bonus.angle += adj;
@@ -92,7 +90,7 @@ BonusHolder.prototype.animateElements = function () {
 			var energyBonus = 5;
 			if (bonus.type == 1) energyBonus = energyBonus * 2;
 			else if (bonus.type == 0) energyBonus = 100;
-			this.game.energy += energyBonus;
+			if (!this.game.gameOver) this.game.energy += energyBonus;
 			if (this.game.energy > 100) this.game.energy = 100;
 			this.particlesHolder.spawnParticles(false, 0, bonus.mesh.position.clone(), 5, bonus.mesh.material.color, .8);
 			i--;
