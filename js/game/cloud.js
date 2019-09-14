@@ -5,7 +5,6 @@ Cloud = function () {
   var geom = new THREE.DodecahedronGeometry(20, 0);
   var mat = new THREE.MeshPhongMaterial({
     color: Colors.white,
-
   });
   var nBlocs = 3 + Math.floor(Math.random() * 3);
   for (var i = 0; i < nBlocs; i++) {
@@ -28,7 +27,8 @@ Cloud.prototype.rotate = function () {
   var l = this.mesh.children.length;
   for (var i = 0; i < l; i++) {
     var m = this.mesh.children[i];
-    m.rotation.z += Math.random() * .005 * (i + 1);
-    m.rotation.y += Math.random() * .002 * (i + 1);
+    var animationBoost = (i+1)*0.5;
+    m.rotation.z += Math.random() * .005 * animationBoost;
+    m.rotation.y += Math.random() * .002 * animationBoost;
   }
 }
