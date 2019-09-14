@@ -118,8 +118,8 @@ var AirPlane = function () {
 
 	var wheelProtecL = wheelProtecR.clone();
 	wheelProtecL.position.z = -wheelProtecR.position.z;
-	this.mesh.add(wheelProtecL);
-	
+	cabin.add(wheelProtecL);
+
 	var suspensionGeom = new THREE.BoxGeometry(4, 20, 4);
 	suspensionGeom.applyMatrix(new THREE.Matrix4().makeTranslation(0, 10, 0))
 	var suspensionMat = new THREE.MeshPhongMaterial({ color: Colors.red, flatShading: THREE.FlatShading });
