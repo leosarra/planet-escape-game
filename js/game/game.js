@@ -528,7 +528,7 @@ function createVehicle(vehicleType) {
 }
 
 function fillParticlesPool() {
-	particlesHolder = new ParticlesHolder();
+	particlesHolder = new ParticlesHolder(30);
 	scene.add(particlesHolder.mesh)
 }
 

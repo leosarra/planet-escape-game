@@ -65,15 +65,15 @@ Particle.prototype.explode = function (isSmoke, speedFactor, pos, color, scale) 
   });
 }
 
-ParticlesHolder = function () {
+ParticlesHolder = function (nPArticles) {
   this.mesh = new THREE.Object3D();
   this.smokePool = [];
   this.particlesPool = [];
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < nPArticles; i++) {
     var particle = new Particle(false, this);
     this.particlesPool.push(particle);
   }
-  for (var i = 0; i < 10; i++) {
+  for (var i = 0; i < nPArticles; i++) {
     var particle = new Particle(true, this);
     this.smokePool.push(particle);
   }
