@@ -112,7 +112,7 @@ function disableShieldImmunity(instant_effect) {
 	if (!game.hasShield) return;
 	game.hasShield = false;
 	game.shieldCooldown = 10000;
-	if (instant_effect && game.bubble!=undefined) game.bubble.material.opacity = 0;
+	if (instant_effect && game.bubble != undefined) game.bubble.material.opacity = 0;
 }
 
 function handleShield(deltaTime) {
@@ -177,9 +177,9 @@ function setupPlayerInputListener() {
 				var cannon1 = game.vehicle.getObjectByName("cannonRight");
 				var cannon2 = game.vehicle.getObjectByName("cannonLeft");
 				var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
-				pos1.x +=2.3;
+				pos1.x += 2.3;
 				var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
-				pos2.x +=2.3;
+				pos2.x += 2.3;
 				projectilesHolder.spawnParticles(pos1);
 				projectilesHolder.spawnParticles(pos2);
 			}
@@ -189,13 +189,13 @@ function setupPlayerInputListener() {
 				var cannon3 = game.vehicle.getObjectByName("lowerCannonLeft");
 				var cannon4 = game.vehicle.getObjectByName("upperCannonLeft");
 				var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
-				pos1.x +=1.5;
+				pos1.x += 1.5;
 				var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
-				pos2.x +=1.5;
+				pos2.x += 1.5;
 				var pos3 = cannon3.getWorldPosition(game.vehicle.position.clone());
-				pos3.x +=1.5;
+				pos3.x += 1.5;
 				var pos4 = cannon4.getWorldPosition(game.vehicle.position.clone());
-				pos4.x +=1.5;
+				pos4.x += 1.5;
 				projectilesHolder.spawnParticles(pos1);
 				projectilesHolder.spawnParticles(pos2);
 				projectilesHolder.spawnParticles(pos3);
