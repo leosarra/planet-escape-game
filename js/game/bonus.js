@@ -28,7 +28,7 @@ BonusHolder = function (game, particlesHolder, quantity) {
 BonusHolder.prototype.spawnBonuses = function () {
 
 	var quantity = 1 + Math.floor(Math.random() * 7);
-	var d = Math.floor(Math.random() * (923 - 730 + 1)) + 725;
+	var d = Math.floor(Math.random() * (923 - 730 + 1)) + 730;
 	var a = 8 + Math.round(Math.random() * 7);
 	var goldBonusSpawned = false;
 	var goldBonusPos = -1;
