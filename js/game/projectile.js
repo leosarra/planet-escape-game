@@ -1,7 +1,7 @@
 Projectile = function (holder) {
     var geom, mat;
     this.holder = holder;
-    var geom = new THREE.BoxGeometry(7, 1, 2);
+    var geom = new THREE.BoxGeometry(7, 0.75, 2);
     var mat = new THREE.MeshPhongMaterial({
         color: 0x7CFC00,
         shininess: 0,
@@ -58,6 +58,7 @@ ProjectilesHolder.prototype.spawnParticles = function (pos) {
 }
 
 ProjectilesHolder.prototype.checkCollisions = function (pos) {
+    var ret = false;
     for (var i = 0; i < this.activeProjectiles.length; i++) {
         var projectile = this.activeProjectiles[i];
         var diffPos = projectile.mesh.position.clone().sub(pos.clone());
@@ -68,8 +69,8 @@ ProjectilesHolder.prototype.checkCollisions = function (pos) {
             this.projectilesPool.unshift(this.activeProjectiles.splice(i, 1)[0]);
             this.mesh.remove(projectile.mesh);
             i--;
-            return true;
+            ret = true;
         }
     }
-    return false;
+    return ret;
 }
