@@ -153,6 +153,7 @@ function init() {
 	createProjectiles();
 	createEnemies();
 	setupPlayerInputListener();
+	htmlUI.loading_message.style.display = 'none';
 	loop();
 }
 
@@ -222,6 +223,7 @@ function initHTMLUi() {
 		scoreMessage: document.getElementById('scoreboardMessage'),
 		scoreboard: document.getElementById('scoreboard'),
 		scoreboard_header: document.getElementById('scoreboard_header'),
+		loading_message: document.getElementById('loadingMessage'),
 	}
 }
 function initDatUI() {
