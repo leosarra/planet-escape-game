@@ -112,7 +112,10 @@ function disableShieldImmunity(instant_effect) {
 	if (!game.hasShield) return;
 	game.hasShield = false;
 	game.shieldCooldown = 10000;
-	if (instant_effect && game.bubble != undefined) game.bubble.material.opacity = 0;
+	if (instant_effect && game.bubble != undefined) {
+		game.bubble.material.opacity = 0;
+		game.bubble.material.visible =false;
+	}
 }
 
 function handleShield(deltaTime) {
@@ -126,10 +129,14 @@ function handleShield(deltaTime) {
 	game.bubble.rotation.y += .002 * deltaTime;
 	if (game.hasShield == true && game.bubble.material.opacity < 0.3) {
 		game.bubble.material.opacity += 0.01;
+		game.bubble.material.visible = true;
 	} else if (game.hasShield == false && game.bubble.material.opacity > 0) {
 		game.bubble.material.opacity -= 0.01;
 	}
-	if (game.bubble.material.opacity < 0) game.bubble.material.opacity = 0;
+	if (game.bubble.material.opacity < 0) {
+		game.bubble.material.opacity = 0;
+		game.bubble.material.visible = false;
+	}
 }
 
 function init() {
