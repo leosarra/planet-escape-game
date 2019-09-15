@@ -45,7 +45,7 @@ var options = {
 	noShieldCost: false,
 };
 
-function createScene() {
+function initScene() {
 	HEIGHT = window.innerHeight;
 	WIDTH = window.innerWidth;
 	scene = new THREE.Scene();
@@ -145,16 +145,16 @@ function init() {
 	initMeshStorage();
 	resetGame();
 	initDatUI();
-	createScene();
-	createLights();
-	createTerrain();
-	createSky();
-	fillParticlesPool();
-	createCoins();
-	createProjectiles();
-	createEnemies();
+	initScene();
+	initLights();
+	initTerrain();
+	initSky();
+	initParticlesHolder();
+	initBonusesHolder();
+	initProjectilesHolder();
+	initEnemiesHolder();
 	setupPlayerInputListener();
-	htmlUI.loading_message.style.display = 'none';
+	htmlUI.loadingMessage.style.display = 'none';
 	loop();
 }
 
@@ -224,7 +224,7 @@ function initHTMLUi() {
 		scoreMessage: document.getElementById('scoreboardMessage'),
 		scoreboard: document.getElementById('scoreboard'),
 		scoreboard_header: document.getElementById('scoreboard_header'),
-		loading_message: document.getElementById('loadingMessage'),
+		loadingMessage: document.getElementById('loadingMessage'),
 	}
 }
 function initDatUI() {
@@ -392,7 +392,7 @@ function startAudio() {
 	});
 }
 
-function createLights() {
+function initLights() {
 	hemisphereLight = new THREE.HemisphereLight(0xF0F8FF, 0x000000, .9)
 	shadowLight = new THREE.DirectionalLight(0xffffff, .9);
 	ambientLight = new THREE.AmbientLight(Colors.pink, .5);
@@ -412,17 +412,17 @@ function createLights() {
 }
 
 
-function createProjectiles() {
+function initProjectilesHolder() {
 	projectilesHolder = new ProjectilesHolder(10);
 	scene.add(projectilesHolder.mesh);
 }
 
-function createCoins() {
+function initBonusesHolder() {
 	bonusHolder = new BonusHolder(game, particlesHolder, 20);
 	scene.add(bonusHolder.mesh)
 }
 
-function createEnemies() {
+function initEnemiesHolder() {
 	enemiesHolder = new EnemiesHolder(game, particlesHolder, enemyMeshStorage, projectilesHolder);
 	scene.add(enemiesHolder.mesh)
 }
@@ -435,13 +435,13 @@ function handleWindowResize() {
 	camera.updateProjectionMatrix();
 }
 
-function createTerrain() {
+function initTerrain() {
 	terrain = new Terrain();
 	terrain.mesh.position.y = -550;
 	scene.add(terrain.mesh);
 }
 
-function createSky() {
+function initSky() {
 	sky = new Sky(game);
 	sky.mesh.position.y = -600;
 	scene.add(sky.mesh);
@@ -538,7 +538,7 @@ function createVehicle(vehicleType) {
 	}
 }
 
-function fillParticlesPool() {
+function initParticlesHolder() {
 	particlesHolder = new ParticlesHolder(30);
 	scene.add(particlesHolder.mesh)
 }
