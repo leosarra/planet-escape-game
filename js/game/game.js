@@ -10,7 +10,7 @@ var oldTime = new Date().getTime();
 var bonusHolder, enemiesHolder, projectilesHolder;
 var particlesHolder;
 var stats;
-var game, scoreboard;
+var game, htmlUI;
 var paused = false;
 var audioStarted = false;
 var Colors = {
@@ -168,7 +168,7 @@ function setupPlayerInputListener() {
 			}
 			addScore(name, Math.floor(game.distance * 40));
 			game.scoreAdded = true;
-			printScoreboard(scoreboard.scoreboard);
+			printScoreboard(htmlUI.scoreboard);
 		} else if (e.which == 83 && !game.showReplay) {
 			if (!game.hasShield) addShield();
 			else disableShieldImmunity(false);
@@ -206,7 +206,7 @@ function setupPlayerInputListener() {
 	});
 }
 function initHTMLUi() {
-	scoreboard = {
+	htmlUI = {
 		level: document.getElementById('levelValue'),
 		distance: document.getElementById('distValue'),
 		energy: document.getElementById('energyBar'),
@@ -317,11 +317,11 @@ function resetGame() {
 	game.vehicleAdjustmentRotationSpeedZ = 0.0008;
 	game.vehicleAdjustmentRotationSpeedX = 0.00001;
 	game.discountEnergyCost = 1;
-	scoreboard.level.innerHTML = 1;
-	scoreboard.distance.innerHTML == 0;
-	scoreboard.energy.style.right = (100 - game.energy) + "%";
-	scoreboard.energy.style.backgroundColor = (game.energy < 50) ? "#f25346" : "#68c3c0";
-	scoreboard.shield.innerHTML = "Ready";
+	htmlUI.level.innerHTML = 1;
+	htmlUI.distance.innerHTML == 0;
+	htmlUI.energy.style.right = (100 - game.energy) + "%";
+	htmlUI.energy.style.backgroundColor = (game.energy < 50) ? "#f25346" : "#68c3c0";
+	htmlUI.shield.innerHTML = "Ready";
 	createVehicle(vehicleType);
 	if (typeof (sound) != 'undefined' && audioStarted) {
 		sound.stop();
@@ -553,26 +553,26 @@ function handleSmoke() {
 	}
 }
 function updateUI() {
-	scoreboard.distance.innerHTML = Math.floor(game.distance * 40);
-	scoreboard.level.innerHTML = game.level;
-	scoreboard.energy.style.right = (100 - game.energy) + "%";
-	scoreboard.energy.style.backgroundColor = (game.energy < 50) ? "#f25346" : "#68c3c0";
-	if (game.hasShield) scoreboard.shield.innerHTML = "Active"
-	else if (game.shieldCooldown == 0) scoreboard.shield.innerHTML = "Ready"
-	else scoreboard.shield.innerHTML = (Math.round(game.shieldCooldown / 100) / 10).valueOf() + "s";
+	htmlUI.distance.innerHTML = Math.floor(game.distance * 40);
+	htmlUI.level.innerHTML = game.level;
+	htmlUI.energy.style.right = (100 - game.energy) + "%";
+	htmlUI.energy.style.backgroundColor = (game.energy < 50) ? "#f25346" : "#68c3c0";
+	if (game.hasShield) htmlUI.shield.innerHTML = "Active"
+	else if (game.shieldCooldown == 0) htmlUI.shield.innerHTML = "Ready"
+	else htmlUI.shield.innerHTML = (Math.round(game.shieldCooldown / 100) / 10).valueOf() + "s";
 	if (game.showReplay) {
-		scoreboard.replay.style.display = "block";
-		scoreboard.scoreboard_header.style.display = "block";
-		scoreboard.scoreboard.style.display = "block";
-		if (!game.scoreAdded) scoreboard.scoreMessage.style.display = "block";
+		htmlUI.replay.style.display = "block";
+		htmlUI.scoreboard_header.style.display = "block";
+		htmlUI.scoreboard.style.display = "block";
+		if (!game.scoreAdded) htmlUI.scoreMessage.style.display = "block";
 	}
 	else {
-		scoreboard.replay.style.display = "none";
-		scoreboard.scoreMessage.style.display = "none";
-		scoreboard.scoreboard_header.style.display = "none";
-		scoreboard.scoreboard.style.display = "none";
+		htmlUI.replay.style.display = "none";
+		htmlUI.scoreMessage.style.display = "none";
+		htmlUI.scoreboard_header.style.display = "none";
+		htmlUI.scoreboard.style.display = "none";
 	}
-	if (game.showReplay && game.scoreAdded) scoreboard.scoreMessage.style.display = "none";
+	if (game.showReplay && game.scoreAdded) htmlUI.scoreMessage.style.display = "none";
 
 }
 
@@ -617,7 +617,7 @@ function handleGameStatus(deltaTime) {
 			var d = diffPos.length();
 			if ((d < 630 || d > 2000) && !game.showReplay) {
 				game.showReplay = true;
-				printScoreboard(scoreboard.scoreboard);
+				printScoreboard(htmlUI.scoreboard);
 				particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.red, 2);
 				scene.remove(game.vehicle);
 				removeShield();
