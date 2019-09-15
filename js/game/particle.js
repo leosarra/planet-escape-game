@@ -20,6 +20,7 @@ Particle = function (isSmoke, holder) {
       shininess: 0,
       specular: 0xffffff,
       flatShading: THREE.FlatShading,
+      transparent: false,
     });
   }
   this.mesh = new THREE.Mesh(geom, mat);
