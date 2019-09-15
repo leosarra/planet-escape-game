@@ -451,21 +451,21 @@ function createVehicle(vehicleType) {
 	var file = null;
 	if (vehicleType == 0) {
 		file = "spaceship1";
-		game.vehicleAdjustmentPositionSpeed = 0.005;
+		game.vehicleAdjustmentPositionSpeed = 0.004;
 		game.vehicleAdjustmentRotationSpeedZ = 0.0008;
 		game.vehicleAdjustmentRotationSpeedX = 0.00001;
 		game.discountEnergyCost = 1;
 	}
 	else if (vehicleType == 1) {
 		file = "spaceship2";
-		game.vehicleAdjustmentPositionSpeed = 0.0033;
+		game.vehicleAdjustmentPositionSpeed = 0.003;
 		game.vehicleAdjustmentRotationSpeedZ = 0.0004;
 		game.vehicleAdjustmentRotationSpeedX = 0.00001;
 		game.discountEnergyCost = 0.65;
 	}
 	else if (vehicleType == 2) {
 		file = "spaceship3";
-		game.vehicleAdjustmentPositionSpeed = 0.0075;
+		game.vehicleAdjustmentPositionSpeed = 0.005;
 		game.vehicleAdjustmentRotationSpeedZ = 0.0008;
 		game.vehicleAdjustmentRotationSpeedX = 0.00005;
 		game.discountEnergyCost = 1.10;
