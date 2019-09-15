@@ -155,6 +155,7 @@ width: 100%;
 text-align: left;
 text-transform: uppercase;
 pointer-events: none;
+display: none;
 }
 
 #scoreboard {
