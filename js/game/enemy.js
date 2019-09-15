@@ -26,7 +26,7 @@ EnemiesHolder.prototype.spawnEnemies = function () {
       if (Math.random() > 0.5) {
         enemy.type = 0;
         enemy.mesh = enemyMeshStorage.getAirplaneMesh();
-        enemy.mesh.scale.set(.17, .17, .17);
+        enemy.mesh.scale.set(.14, .14, .14);
         enemy.mesh.rotation.y = 3 * Math.PI;
       } else {
         enemy.type = 3;
