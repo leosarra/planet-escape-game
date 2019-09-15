@@ -90,7 +90,8 @@ function addShield() {
 		color: Colors.pink,
 		shininess: 0,
 		specular: 0xffffff,
-		transparent: true, opacity: 0,
+		transparent: true, 
+		opacity: 0,
 		flatShading: THREE.FlatShading
 	});
 	game.bubble = new THREE.Mesh(geom, mat);
@@ -523,6 +524,7 @@ function createVehicle(vehicleType) {
 				game.vehicle.traverse(function (child) {
 					if (child instanceof THREE.Mesh) {
 						child.castShadow = true;
+						child.material.transparent = false;
 					}
 				});
 				game.vehicle.castShadow = true;
