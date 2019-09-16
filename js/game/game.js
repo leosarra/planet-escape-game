@@ -235,10 +235,9 @@ function initDatUI() {
 	stats = new Stats();
 	gui = new dat.GUI({ width: 280 });
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
-	gui.add(options, 'vehicle', { Spaceship1: 0, Spaceship2: 1, Spaceship3: 2, TARDIS: 3 });
+	gui.add(options, 'vehicle', { '- Spaceship1': 0, '- Spaceship2': 1, '- Spaceship3': 2, '- TARDIS': 3 });
 	gui.add(options, 'paused');
 	gui.add(options, "audio").onChange(function () {
-
 		if (options.audio) {
 			audioListener = new THREE.AudioListener();
 			camera.add(audioListener);
@@ -666,6 +665,7 @@ function loop() {
 			game.speedLastUpdate = Math.floor(game.distance);
 			game.baseSpeed = 0;
 			game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement * game.level;
+			terrain.moveVerts();
 		}
 		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
 			game.coinLastSpawn = Math.floor(game.distance);
