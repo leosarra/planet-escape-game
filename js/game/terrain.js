@@ -3,11 +3,10 @@ Terrain = function () {
 	geom.applyMatrix(new THREE.Matrix4().makeRotationX(-Math.PI / 2));
 	geom.mergeVertices();
 	var l = geom.vertices.length;
-	this.waves = [];
-
+	this.verts = [];
 	for (var i = 0; i < l; i++) {
 		var v = geom.vertices[i];
-		this.waves.push({
+		this.verts.push({
 			y: v.y,
 			x: v.x,
 			z: v.y,
@@ -25,27 +24,20 @@ Terrain = function () {
 
 	this.mesh = new THREE.Mesh(geom, mat);
 	this.mesh.receiveShadow = true;
-	this.moveWaves()
+	this.moveVerts()
 }
 
-Terrain.prototype.moveWaves = function () {
-	// get the vertices
+Terrain.prototype.moveVerts = function () {
 	var verts = this.mesh.geometry.vertices;
 	var l = verts.length;
-
-
 	for (var i = 0; i < l; i++) {
 		var v = verts[i];
-
 		var vprops = this.waves[i];
-
 		v.x = vprops.x + Math.cos(vprops.ang) * vprops.amp;
 		v.y = vprops.y + Math.sin(vprops.ang) * vprops.amp;
 		vprops.ang += vprops.speed;
 
 	}
-
 	this.mesh.geometry.verticesNeedUpdate = true;
-
 	this.mesh.rotation.z += .005;
 }
