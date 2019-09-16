@@ -251,7 +251,7 @@ function initDatUI() {
 		}
 	});
 	gui.add(options, 'reset');
-	var debug = gui.addFolder("Debug");
+	var debug = gui.addFolder("Difficulty customization");
 	debug.add(options, 'speedIncrOverTime');
 	debug.add(options, 'speedIncrPerLevel');
 	debug.add(options, 'energyDecayPerFrame')
