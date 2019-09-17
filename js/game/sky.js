@@ -1,7 +1,7 @@
-Sky = function (game) {
+Sky = function (game, nClouds) {
 	this.game = game;
 	this.mesh = new THREE.Object3D();
-	this.nClouds = 15;
+	this.nClouds = nClouds;
 	this.clouds = [];
 	var stepAngle = Math.PI * 2 / this.nClouds;
 	for (var i = 0; i < this.nClouds; i++) {

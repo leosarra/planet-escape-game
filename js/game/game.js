@@ -441,7 +441,7 @@ function initTerrain() {
 }
 
 function initSky() {
-	sky = new Sky(game);
+	sky = new Sky(game,15);
 	sky.mesh.position.y = -600;
 	scene.add(sky.mesh);
 }
