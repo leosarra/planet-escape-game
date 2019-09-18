@@ -92,7 +92,7 @@ function addShield() {
 		color: Colors.pink,
 		shininess: 0,
 		specular: 0xffffff,
-		transparent: true, 
+		transparent: true,
 		opacity: 0,
 		flatShading: THREE.FlatShading
 	});
@@ -117,7 +117,7 @@ function disableShieldImmunity(instant_effect) {
 	game.shieldCooldown = 10000;
 	if (instant_effect && game.bubble != undefined) {
 		game.bubble.material.opacity = 0;
-		game.bubble.material.visible =false;
+		game.bubble.material.visible = false;
 	}
 }
 
@@ -169,53 +169,63 @@ function setupPlayerInputListener() {
 	document.addEventListener('mousemove', handleMouseMove, false);
 	document.addEventListener('keyup', (e) => {
 		if (e.which == 83 && game.showReplay) {
-			var name = window.prompt("Enter your name");
-			if (name == undefined) {
-				return;
-			}
-			if (name === "") {
-				alert("Name can't be left empty");
-				return;
-			}
-			addScore(name, Math.floor(game.distance * 40));
-			game.scoreAdded = true;
-			printScoreboard(htmlUI.scoreboard);
+			addPlayerScore();
 		} else if (e.which == 83 && !game.showReplay) {
 			if (!game.hasShield) addShield();
 			else disableShieldImmunity(false);
 		} else if (e.which == 65 && !game.gameOver && game.vehicle != undefined && vehicleType != 3) {
-			if (vehicleType == 0 || vehicleType == 2) {
-				var cannon1 = game.vehicle.getObjectByName("cannonRight");
-				var cannon2 = game.vehicle.getObjectByName("cannonLeft");
-				var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
-				pos1.x += 2.3;
-				var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
-				pos2.x += 2.3;
-				projectilesHolder.spawnParticles(pos1);
-				projectilesHolder.spawnParticles(pos2);
-			}
-			else if (vehicleType == 1) {
-				var cannon1 = game.vehicle.getObjectByName("lowerCannonRight");
-				var cannon2 = game.vehicle.getObjectByName("upperCannonRight");
-				var cannon3 = game.vehicle.getObjectByName("lowerCannonLeft");
-				var cannon4 = game.vehicle.getObjectByName("upperCannonLeft");
-				var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
-				pos1.x += 1.5;
-				var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
-				pos2.x += 1.5;
-				var pos3 = cannon3.getWorldPosition(game.vehicle.position.clone());
-				pos3.x += 1.5;
-				var pos4 = cannon4.getWorldPosition(game.vehicle.position.clone());
-				pos4.x += 1.5;
-				projectilesHolder.spawnParticles(pos1);
-				projectilesHolder.spawnParticles(pos2);
-				projectilesHolder.spawnParticles(pos3);
-				projectilesHolder.spawnParticles(pos4);
-			}
-			if (!options.noFireCost) game.energy -= 5;
+			fireProjectile();
 		} else if (e.which == 82 && game.showReplay) resetGame();
 	});
 }
+
+function fireProjectile() {
+	if (vehicleType == 0 || vehicleType == 2) {
+		var cannon1 = game.vehicle.getObjectByName("cannonRight");
+		var cannon2 = game.vehicle.getObjectByName("cannonLeft");
+		var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
+		pos1.x += 2.3;
+		var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
+		pos2.x += 2.3;
+		projectilesHolder.spawnParticles(pos1);
+		projectilesHolder.spawnParticles(pos2);
+	}
+	else if (vehicleType == 1) {
+		var cannon1 = game.vehicle.getObjectByName("lowerCannonRight");
+		var cannon2 = game.vehicle.getObjectByName("upperCannonRight");
+		var cannon3 = game.vehicle.getObjectByName("lowerCannonLeft");
+		var cannon4 = game.vehicle.getObjectByName("upperCannonLeft");
+		var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
+		pos1.x += 1.5;
+		var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
+		pos2.x += 1.5;
+		var pos3 = cannon3.getWorldPosition(game.vehicle.position.clone());
+		pos3.x += 1.5;
+		var pos4 = cannon4.getWorldPosition(game.vehicle.position.clone());
+		pos4.x += 1.5;
+		projectilesHolder.spawnParticles(pos1);
+		projectilesHolder.spawnParticles(pos2);
+		projectilesHolder.spawnParticles(pos3);
+		projectilesHolder.spawnParticles(pos4);
+	}
+	if (!options.noFireCost) game.energy -= 5;
+}
+
+
+function addPlayerScore() {
+	var name = window.prompt("Enter your name");
+	if (name == undefined) {
+		return;
+	}
+	if (name === "") {
+		alert("Name can't be left empty");
+		return;
+	}
+	addScore(name, Math.floor(game.distance * 40));
+	game.scoreAdded = true;
+	printScoreboard(htmlUI.scoreboard);
+}
+
 function initHTMLUi() {
 	htmlUI = {
 		level: document.getElementById('levelValue'),
@@ -441,7 +451,7 @@ function initTerrain() {
 }
 
 function initSky() {
-	sky = new Sky(game,15);
+	sky = new Sky(game, 15);
 	sky.mesh.position.y = -600;
 	scene.add(sky.mesh);
 }
