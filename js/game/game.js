@@ -13,6 +13,8 @@ var stats;
 var game, htmlUI;
 var paused = false;
 var audioStarted = false;
+var levelChanged = undefined;
+var terrainIsChanging = false;
 var Colors = {
 	red: 0xf25346,
 	green: 0x38761D,
@@ -336,6 +338,7 @@ function resetGame() {
 		sound.stop();
 		if (options.audio) sound.play();
 	}
+	if (typeof (ambientLight) != 'undefined') ambientLight.intensity = 0.5;
 
 }
 
@@ -356,6 +359,7 @@ function updateVehicle() {
 	game.vehicle.position.x += (targetX - game.vehicle.position.x) * game.vehicleAdjustmentPositionSpeed * deltaTime;
 	game.vehicle.rotation.z = (targetY - game.vehicle.position.y) * game.vehicleAdjustmentRotationSpeedZ * deltaTime;
 	if (vehicleType != 3) game.vehicle.rotation.x = (game.vehicle.position.y - targetY) * game.vehicleAdjustmentRotationSpeedX * deltaTime;
+	else game.vehicle.rotation.y = game.vehicle.rotation.y + 0.003 * deltaTime;
 	if (typeof (game.bubble) != 'undefined') {
 		game.bubble.position.y = game.vehicle.position.y;
 		if (vehicleType == 3) game.bubble.position.y = game.bubble.position.y + 8;
@@ -635,13 +639,6 @@ function handleGameStatus(deltaTime) {
 	}
 }
 
-function handleTardisRotation(deltaTime) {
-	if (game.vehicle == undefined) return;
-	if (vehicleType == 3) game.vehicle.rotation.y = game.vehicle.rotation.y + 0.003 * deltaTime;
-	else {
-
-	}
-}
 
 function loop() {
 	stats.begin();
@@ -656,15 +653,21 @@ function loop() {
 		return;
 	}
 	applySettings();
+	if (terrainIsChanging && levelChanged != undefined && newTime - levelChanged < 5000) {
+		terrain.moveVerts();
+	} else terrainIsChanging = false;
 
 	if (!game.gameOver) {
+
 		if (game.distanceSinceStartLevel > (game.levelDistance + 5 * game.level)) {
 			game.distanceSinceStartLevel = 0;
 			game.level = game.level + 1;
 			game.speedLastUpdate = Math.floor(game.distance);
 			game.baseSpeed = 0;
 			game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement * game.level;
-			terrain.moveVerts();
+			levelChanged = new Date().getTime();
+			terrainIsChanging = true;
+
 		}
 		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
 			game.coinLastSpawn = Math.floor(game.distance);
@@ -704,8 +707,9 @@ function loop() {
 	handleGameStatus(deltaTime);
 	sky.moveClouds();
 	bonusHolder.animateElements();
+	bonusHolder.checkCollisions();
 	enemiesHolder.animateEnemies();
-	handleTardisRotation(deltaTime);
+	enemiesHolder.checkCollisions();
 	updateUI();
 	renderer.render(scene, camera);
 	stats.end();
