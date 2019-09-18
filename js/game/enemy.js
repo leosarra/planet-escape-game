@@ -149,9 +149,15 @@ EnemiesHolder.prototype.animateEnemies = function () {
 
       if (enemy.decreaseLegRight) enemy.legRight.rotation.y -= legDiff;
       else enemy.legRight.rotation.y += legDiff;
-
     }
-    if (game.vehicle == undefined) continue;
+
+  }
+}
+
+EnemiesHolder.prototype.checkCollisions = function () {
+  if (game.vehicle == undefined) return;
+  for (var i = 0; i < this.enemiesInUse.length; i++) {
+    var enemy = this.enemiesInUse[i];
     if (this.projectilesHolder.checkCollisions(enemy.mesh.position)) {
       this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position, 5, Colors.green, 3);
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
@@ -165,7 +171,7 @@ EnemiesHolder.prototype.animateEnemies = function () {
       i--;
       this.mesh.remove(enemy.mesh);
       if (this.game.hasShield) {
-        this.particlesHolder.spawnParticles(false, 0, game.vehicle.position, 5, Colors.green, 3);
+        this.particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.green, 3);
         disableShieldImmunity(true);
       }
       else {
@@ -179,7 +185,6 @@ EnemiesHolder.prototype.animateEnemies = function () {
     }
   }
 }
-
 
 Enemy = function () {
   this.type = -1;
