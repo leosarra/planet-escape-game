@@ -80,8 +80,13 @@ BonusHolder.prototype.animateElements = function () {
 		bonus.mesh.position.x = Math.cos(bonus.angle) * bonus.distance;
 		bonus.mesh.rotation.z += Math.random() * .005 * game.deltaTime;
 		bonus.mesh.rotation.y += Math.random() * .005 * game.deltaTime;
-		if (this.game.vehicle == undefined) return;
+	}
+}
 
+BonusHolder.prototype.checkCollisions = function () {
+	if (this.game.vehicle == undefined) return;
+	for (var i = 0; i < this.bonusesInUse.length; i++) {
+		var bonus = this.bonusesInUse[i];
 		var diffPos = this.game.vehicle.position.clone().sub(bonus.mesh.position.clone());
 		var d = diffPos.length();
 		if (d < 15) {
