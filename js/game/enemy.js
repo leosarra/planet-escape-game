@@ -159,8 +159,7 @@ EnemiesHolder.prototype.animateEnemies = function () {
       i--;
       continue;
     }
-    var diffPos = game.vehicle.position.clone().sub(enemy.mesh.position.clone());
-    var d = diffPos.length();
+    var d = game.vehicle.position.distanceTo(enemy.mesh.position);
     if (d < 15) {
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       i--;
