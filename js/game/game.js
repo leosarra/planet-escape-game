@@ -363,19 +363,15 @@ function updateVehicle() {
 		game.bubble.rotation.z = game.vehicle.rotation.z;
 		game.bubble.rotation.x = game.vehicle.rotation.x;
 	}
-
-
 }
 
 function normalize(v, vmin, vmax, tmin, tmax) {
-
 	var nv = Math.max(Math.min(v, vmax), vmin);
 	var dv = vmax - vmin;
 	var pc = (nv - vmin) / dv;
 	var dt = tmax - tmin;
 	var tv = tmin + (pc * dt);
 	return tv;
-
 }
 
 function startAudio() {
@@ -587,9 +583,12 @@ function updateUI() {
 }
 
 
-function handleRotation(deltaTime) {
-	terrain.mesh.rotation.z += game.baseSpeed * game.deltaTime;
+function handleTerrainRotation(deltaTime) {
+	terrain.mesh.rotation.z += game.baseSpeed * deltaTime;
 	if (terrain.mesh.rotation.z > 2 * Math.PI) terrain.mesh.rotation.z -= 2 * Math.PI;
+}
+
+function handleLightBrightness(deltaTime) {
 	if (ambientLight.intensity < 1.0) ambientLight.intensity += (.5 - ambientLight.intensity) * deltaTime * 0.005;
 	else ambientLight.intensity = 1.0;
 }
@@ -696,7 +695,8 @@ function loop() {
 		resetGame();
 	}
 	if (meshesReady && !game.firstMeshesSpawned) game.firstMeshesSpawned = true;
-	handleRotation(deltaTime);
+	handleTerrainRotation(deltaTime);
+	handleLightBrightness(deltaTime);
 	handleSpeed(deltaTime);
 	handleEnergy(deltaTime);
 	handleShield(deltaTime);
