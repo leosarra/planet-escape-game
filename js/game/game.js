@@ -348,7 +348,7 @@ function resetGame() {
 		sound.stop();
 		if (options.audio) sound.play();
 	}
-	if (typeof (ambientLight) != 'undefined') ambientLight.intensity = 0.5;
+	if (typeof (ambientLight) != 'undefined') ambientLight.intensity = 0.4;
 
 }
 
