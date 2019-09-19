@@ -26,7 +26,8 @@ var Colors = {
 	blue: 0x68c3c0,
 	ligherBlack: 0x404040,
 	black: 0x000000,
-	gray: 0xD3D3D3
+	gray: 0xD3D3D3,
+	aliceBlue: 0xF0F8FF,
 };
 var meshReady = false;
 
@@ -293,7 +294,6 @@ function applySettings() {
 	if (options.speedIncrPerLevel >= 0 && options.speedIncrPerLevel != game.levelSpeedIncrement) game.levelSpeedIncrement = options.speedIncrPerLevel;
 	if (options.energyDecayPerFrame >= 0 && options.energyDecayPerFrame != game.energyDecayPerFrame) game.energyDecayPerFrame = options.energyDecayPerFrame;
 	if (options.energyDecayIncrPerLevel >= 0 && options.energyDecayIncrPerLevel != game.energyDecayIncrPerLevel) game.energyDecayIncrPerLevel = options.energyDecayIncrPerLevel;
-
 }
 
 function resetGame() {
@@ -402,10 +402,10 @@ function startAudio() {
 }
 
 function initLights() {
-	hemisphereLight = new THREE.HemisphereLight(0xF0F8FF, 0x000000, .9)
-	shadowLight = new THREE.DirectionalLight(0xffffff, .9);
-	ambientLight = new THREE.AmbientLight(Colors.pink, .5);
-	shadowLight.position.set(150, 350, 350);
+	hemisphereLight = new THREE.HemisphereLight(Colors.aliceBlue, 0x000000, .9)
+	shadowLight = new THREE.DirectionalLight(Colors.white, .9);
+	ambientLight = new THREE.AmbientLight(Colors.pink, .4);
+	shadowLight.position.set(160, 340, 350);
 	shadowLight.castShadow = true;
 	shadowLight.shadow.camera.left = -400;
 	shadowLight.shadow.camera.right = 400;
