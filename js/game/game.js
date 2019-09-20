@@ -147,7 +147,7 @@ function init() {
 	initHTMLUi();
 	initMeshStorage();
 	resetGame();
-	initDatUI();
+	initDatGUI();
 	initScene();
 	initLights();
 	initTerrain();
@@ -240,7 +240,7 @@ function initHTMLUi() {
 		loadingMessage: document.getElementById('loadingMessage'),
 	}
 }
-function initDatUI() {
+function initDatGUI() {
 	options.speedIncrPerLevel = game.levelSpeedIncrement;
 	options.speedIncrOverTime = game.speedIncrement * 100;
 	options.energyDecayPerFrame = game.energyDecayPerFrame;
@@ -668,7 +668,6 @@ function loop() {
 	if (terrainIsChanging && levelChanged != undefined && newTime - levelChanged < 5000) {
 		terrain.moveVerts();
 	} else terrainIsChanging = false;
-	console.log(game.energy);
 	if (!game.gameOver) {
 
 		if (game.distanceSinceStartLevel > (game.levelDistance + 5 * game.level)) {
