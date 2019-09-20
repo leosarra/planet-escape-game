@@ -410,7 +410,7 @@ function initLights() {
 	shadowLight.shadow.camera.top = SHADOW_POS;
 	shadowLight.shadow.camera.bottom = -SHADOW_POS;
 	shadowLight.shadow.camera.near = NEAR_PLANE;
-	shadowLight.shadow.camera.far = FAR_PLANE/10;
+	shadowLight.shadow.camera.far = FAR_PLANE / 10;
 	shadowLight.shadow.mapSize.width = SHADOW_MAP_SIZE;
 	shadowLight.shadow.mapSize.height = SHADOW_MAP_SIZE;
 	scene.add(shadowLight);

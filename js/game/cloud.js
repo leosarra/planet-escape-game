@@ -20,14 +20,13 @@ Cloud = function () {
     m.receiveShadow = true;
     this.mesh.add(m);
   }
-
 }
 
 Cloud.prototype.rotate = function () {
   var l = this.mesh.children.length;
   for (var i = 0; i < l; i++) {
     var m = this.mesh.children[i];
-    var animationBoost = (i+1)*0.5;
+    var animationBoost = (i + 1) * 0.5;
     m.rotation.z += Math.random() * .0055 * animationBoost;
     m.rotation.y += Math.random() * .00225 * animationBoost;
   }
