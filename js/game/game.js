@@ -1,4 +1,8 @@
 window.addEventListener('load', init, false);
+var SHADOW_POS = 400;
+var FAR_PLANE = 10000;
+var NEAR_PLANE = 1;
+var SHADOW_MAP_SIZE = 2048;
 var gui;
 var enemyMeshStorage;
 var audio, audioListener, scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH, renderer, container;
@@ -15,22 +19,20 @@ var paused = false;
 var audioStarted = false;
 var levelChanged = undefined;
 var terrainIsChanging = false;
+var meshReady = false;
 var Colors = {
-	red: 0xf25346,
-	green: 0x38761D,
-	lightGreen: 0x7CFC00,
+	red: 0xf15547,
+	green: 0x408622,
 	white: 0xd8d0d1,
-	brown: 0x59332e,
-	pink: 0xF5986E,
-	brownDark: 0x23190f,
-	blue: 0x68c3c0,
-	ligherBlack: 0x404040,
-	black: 0x000000,
+	brown: 0x643b35,
+	pink: 0xf1986f,
+	brownDark: 0x271b10,
 	gray: 0xD3D3D3,
 	aliceBlue: 0xF0F8FF,
+	blue: 0x68ccc9,
+	ligherBlack: 0x404040,
+	black: 0x000000,
 };
-var meshReady = false;
-
 var options = {
 	vehicle: 0,
 	difficulty: 0,
@@ -55,13 +57,11 @@ function initScene() {
 	scene.fog = new THREE.Fog(Colors.gray, 100, 950);
 	aspectRatio = WIDTH / HEIGHT;
 	fieldOfView = 60;
-	nearPlane = 1;
-	farPlane = 10000;
 	camera = new THREE.PerspectiveCamera(
 		fieldOfView,
 		aspectRatio,
-		nearPlane,
-		farPlane
+		NEAR_PLANE,
+		FAR_PLANE
 	);
 	camera.position.x = 0;
 	camera.position.z = 200;
@@ -402,21 +402,21 @@ function startAudio() {
 }
 
 function initLights() {
-	hemisphereLight = new THREE.HemisphereLight(Colors.aliceBlue, 0x000000, .9)
-	shadowLight = new THREE.DirectionalLight(Colors.white, .9);
-	ambientLight = new THREE.AmbientLight(Colors.pink, .4);
+	shadowLight = new THREE.DirectionalLight(Colors.white, 1);
 	shadowLight.position.set(160, 340, 350);
 	shadowLight.castShadow = true;
-	shadowLight.shadow.camera.left = -400;
-	shadowLight.shadow.camera.right = 400;
-	shadowLight.shadow.camera.top = 400;
-	shadowLight.shadow.camera.bottom = -400;
-	shadowLight.shadow.camera.near = 1;
-	shadowLight.shadow.camera.far = 1000;
-	shadowLight.shadow.mapSize.width = 2048;
-	shadowLight.shadow.mapSize.height = 2048;
-	scene.add(hemisphereLight);
+	shadowLight.shadow.camera.left = -SHADOW_POS;
+	shadowLight.shadow.camera.right = SHADOW_POS;
+	shadowLight.shadow.camera.top = SHADOW_POS;
+	shadowLight.shadow.camera.bottom = -SHADOW_POS;
+	shadowLight.shadow.camera.near = NEAR_PLANE;
+	shadowLight.shadow.camera.far = FAR_PLANE/10;
+	shadowLight.shadow.mapSize.width = SHADOW_MAP_SIZE;
+	shadowLight.shadow.mapSize.height = SHADOW_MAP_SIZE;
 	scene.add(shadowLight);
+	hemisphereLight = new THREE.HemisphereLight(Colors.aliceBlue, 0x000000, 1)
+	ambientLight = new THREE.AmbientLight(Colors.pink, .4);
+	scene.add(hemisphereLight);
 	scene.add(ambientLight);
 }
 
@@ -615,11 +615,13 @@ function handleSpeed(deltaTime) {
 }
 
 function handleEnergy(deltaTime) {
+	if (game.gameOver) return;
 	var energyMinus = game.energyDecayPerFrame * deltaTime * game.discountEnergyCost;
 	if (game.level > 1) energyMinus = energyMinus * (game.level * game.energyDecayIncrPerLevel);
 	if (game.hasShield) energyMinus += game.shieldActiveCost;
 	game.energy = game.energy - energyMinus;
 	if (game.energy <= 0) {
+		game.energy = 0;
 		game.gameOver = true;
 		if (game.hasShield) disableShieldImmunity(false);
 	}
@@ -666,7 +668,7 @@ function loop() {
 	if (terrainIsChanging && levelChanged != undefined && newTime - levelChanged < 5000) {
 		terrain.moveVerts();
 	} else terrainIsChanging = false;
-
+	console.log(game.energy);
 	if (!game.gameOver) {
 
 		if (game.distanceSinceStartLevel > (game.levelDistance + 5 * game.level)) {
