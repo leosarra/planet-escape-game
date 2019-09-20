@@ -48,6 +48,7 @@ var options = {
 	energyDecayPerFrame: -1,
 	energyDecayIncrPerLevel: -1,
 	noShieldCost: false,
+	fixedDeltaTime: -1,
 };
 
 function initScene() {
@@ -263,19 +264,21 @@ function initDatGUI() {
 		}
 	});
 	gui.add(options, 'reset');
-	var debug = gui.addFolder("Difficulty customization");
-	debug.add(options, 'speedIncrOverTime');
-	debug.add(options, 'speedIncrPerLevel');
-	debug.add(options, 'energyDecayPerFrame')
-	debug.add(options, 'energyDecayIncrPerLevel');
-	debug.add(options, 'noFireCost').onChange(function () {
+	var difficulty = gui.addFolder("Difficulty customization");
+	difficulty.add(options, 'speedIncrOverTime');
+	difficulty.add(options, 'speedIncrPerLevel');
+	difficulty.add(options, 'energyDecayPerFrame')
+	difficulty.add(options, 'energyDecayIncrPerLevel');
+	difficulty.add(options, 'noFireCost').onChange(function () {
 		removeShield();
 		resetGame();
 	});
-	debug.add(options, 'noShieldCost').onChange(function () {
+	difficulty.add(options, 'noShieldCost').onChange(function () {
 		removeShield();
 		resetGame();
 	});
+	var debug = gui.addFolder("Debug");
+	debug.add(options, 'fixedDeltaTime');
 	var perfFolder = gui.addFolder("Performance");
 	var perfLi = document.createElement("li");
 	stats.domElement.height = '48px';
@@ -499,7 +502,7 @@ function createVehicle(vehicleType) {
 					game.vehicle = object;
 					scene.add(object);
 					lock = false;
-					game.vehicle.scale.set(.05, .05, .05);
+					game.vehicle.scale.set(.15, .15, .15);
 					game.vehicle.position.y = 150;
 					game.vehicle.rotation.y = 1.5;
 					game.vehicle.traverse(function (child) {
@@ -657,6 +660,7 @@ function loop() {
 	newTime = new Date().getTime();
 	deltaTime = newTime - oldTime;
 	if (deltaTime > 1000) deltaTime = 1;
+	if (options.fixedDeltaTime!=-1 && options.fixedDeltaTime>0) deltaTime = options.fixedDeltaTime;
 	game.deltaTime = deltaTime;
 	oldTime = newTime;
 	var meshesReady = enemyMeshStorage.isReady();
