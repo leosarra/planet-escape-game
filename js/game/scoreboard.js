@@ -28,7 +28,7 @@ function addScore(name, distance) {
     }
     if (ins_pos != undefined) u.insert(ins_pos, o);
     if (u.length == 0) u.push(o);
-    if (u.length > 5) u.pop();
+    if (u.length > 8) u.pop();
     localStorage.scoreboard = JSON.stringify(u);
 }
 
@@ -39,7 +39,6 @@ function printScoreboard(elem) {
     for (var i = 0; i < u.length; i++) {
         text += (i + 1).valueOf() + ". " + u[i].name + " - " + u[i].distance.valueOf() + "<br/>";
     }
-
     if (text == "") text = "No score submitted";
     elem.innerHTML = text;
 }
