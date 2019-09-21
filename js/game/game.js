@@ -35,7 +35,6 @@ var Colors = {
 };
 var options = {
 	vehicle: 0,
-	difficulty: 0,
 	audio: false,
 	paused: false,
 	noFireCost: false,
