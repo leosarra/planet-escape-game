@@ -28,6 +28,7 @@ function addScore(name, distance) {
     }
     if (ins_pos != undefined) u.insert(ins_pos, o);
     if (u.length == 0) u.push(o);
+    else if (ins_pos == undefined) u.insert(u.length,o);
     if (u.length > 8) u.pop();
     localStorage.scoreboard = JSON.stringify(u);
 }
