@@ -314,7 +314,7 @@ function resetGame() {
 	game.vehicleInitialSpeed = .00035;
 	game.baseHeigth = 100;
 	game.speedIncrement = .0000023;
-	game.levelSpeedIncrement = .000045;
+	game.levelSpeedIncrement = .000040;
 	game.coinLastSpawn = 0;
 	game.enemiesLastSpawn = 0;
 	game.speedLastUpdate = 0;
