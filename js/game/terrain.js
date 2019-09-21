@@ -18,7 +18,7 @@ Terrain = function () {
 	var mat = new THREE.MeshPhongMaterial({
 		color: Colors.brown,
 		transparent: false,
-		opacity: .8,
+		opacity: .90,
 		flatShading: THREE.FlatShading,
 	});
 
