@@ -1,7 +1,7 @@
 Projectile = function (holder) {
     var geom, mat;
     this.holder = holder;
-    var geom = new THREE.BoxGeometry(7, 0.75, 2);
+    var geom = new THREE.BoxGeometry(7, 0.70, 2);
     var mat = new THREE.MeshPhongMaterial({
         color: 0x7CFC00,
         shininess: 0,
