@@ -305,7 +305,7 @@ function resetGame() {
 	if (typeof (game.vehicle) != 'undefined') scene.remove(game.vehicle);
 	game.hasShield = false;
 	game.energyDecayPerFrame = 0.0015;
-	game.energyDecayIncrPerLevel = .000040;
+	game.energyDecayIncrPerLevel = 0.00040;
 	game.level = 1;
 	game.energy = 100;
 	game.firstMeshesSpawned = false;
@@ -313,8 +313,8 @@ function resetGame() {
 	game.targetBaseSpeed = .00035;
 	game.vehicleInitialSpeed = .00035;
 	game.baseHeigth = 100;
-	game.speedIncrement = .0000027;
-	game.levelSpeedIncrement = .000040;
+	game.speedIncrement = .0000023;
+	game.levelSpeedIncrement = .000045;
 	game.coinLastSpawn = 0;
 	game.enemiesLastSpawn = 0;
 	game.speedLastUpdate = 0;
@@ -619,8 +619,9 @@ function handleSpeed(deltaTime) {
 function handleEnergy(deltaTime) {
 	if (game.gameOver) return;
 	var energyMinus = game.energyDecayPerFrame * deltaTime * game.discountEnergyCost;
-	if (game.level > 1) energyMinus = energyMinus * (game.level * game.energyDecayIncrPerLevel);
+	if (game.level > 1) energyMinus += game.level * game.energyDecayIncrPerLevel;
 	if (game.hasShield) energyMinus += game.shieldActiveCost;
+	console.log(energyMinus, game.level, game.energyDecayIncrPerLevel);
 	game.energy = game.energy - energyMinus;
 	if (game.energy <= 0) {
 		game.energy = 0;
