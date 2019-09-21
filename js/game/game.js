@@ -304,7 +304,7 @@ function resetGame() {
 	}
 	if (typeof (game.vehicle) != 'undefined') scene.remove(game.vehicle);
 	game.hasShield = false;
-	game.energyDecayPerFrame = 0.0015;
+	game.energyDecayPerFrame = 0.0020;
 	game.energyDecayIncrPerLevel = 0.00040;
 	game.level = 1;
 	game.energy = 100;
