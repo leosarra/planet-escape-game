@@ -121,8 +121,8 @@ EnemiesHolder.prototype.animateEnemies = function () {
         enemy.miniAsteroid3.rotation.z += Math.random() * .0015 * game.deltaTime;
       }
     } else if (enemy.type == 2) {
-      enemy.sateliteDisc.rotation.x += 0.05;
-      enemy.sateliteTopPart.rotation.x += 0.025;
+      enemy.sateliteDisc.rotation.x += 0.035;
+      enemy.sateliteTopPart.rotation.x += 0.022;
     } else if (enemy.type == 3) {
 
       if (enemy.wingLeft.rotation.x > 1) enemy.decreaseWings = true
