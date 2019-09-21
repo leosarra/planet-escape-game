@@ -87,9 +87,8 @@ BonusHolder.prototype.checkCollisions = function () {
 	if (this.game.vehicle == undefined) return;
 	for (var i = 0; i < this.bonusesInUse.length; i++) {
 		var bonus = this.bonusesInUse[i];
-		var diffPos = this.game.vehicle.position.clone().sub(bonus.mesh.position.clone());
-		var d = diffPos.length();
-		if (d < 15) {
+		var distance = game.vehicle.position.distanceTo(bonus.mesh.position);
+		if (distance < 15) {
 			this.bonusesPool.unshift(this.bonusesInUse.splice(i, 1)[0]);
 			this.mesh.remove(bonus.mesh);
 			var energyBonus = 5;

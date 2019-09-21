@@ -640,9 +640,8 @@ function handleGameStatus(deltaTime) {
 		game.baseSpeed *= 0.99;
 		if (game.baseSpeed < 0) game.baseSpeed = 0;
 		if (!game.showReplay) {
-			var diffPos = game.vehicle.position.clone().sub(terrain.mesh.position);
-			var d = diffPos.length();
-			if ((d < 630 || d > 2000) && !game.showReplay) {
+			var distance = game.vehicle.position.distanceTo(terrain.mesh.position);
+			if ((distance < 630 || distance > 2000) && !game.showReplay) {
 				game.showReplay = true;
 				printScoreboard(htmlUI.scoreboard);
 				particlesHolder.spawnParticles(false, 0, game.vehicle.position.clone(), 5, Colors.red, 2);

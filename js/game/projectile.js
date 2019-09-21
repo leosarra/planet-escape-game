@@ -61,8 +61,8 @@ ProjectilesHolder.prototype.checkCollisions = function (pos) {
     var ret = false;
     for (var i = 0; i < this.activeProjectiles.length; i++) {
         var projectile = this.activeProjectiles[i];
-        var d = projectile.mesh.position.distanceTo(pos);
-        if (d < 14) {
+        var distance = projectile.mesh.position.distanceTo(pos);
+        if (distance < 14) {
             projectile.tween1.kill();
             projectile.tween2.kill();
             this.projectilesPool.unshift(this.activeProjectiles.splice(i, 1)[0]);

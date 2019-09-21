@@ -165,8 +165,8 @@ EnemiesHolder.prototype.checkCollisions = function () {
       i--;
       continue;
     }
-    var d = game.vehicle.position.distanceTo(enemy.mesh.position);
-    if (d < 15) {
+    var distance = game.vehicle.position.distanceTo(enemy.mesh.position);
+    if (distance < 15) {
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       i--;
       this.mesh.remove(enemy.mesh);
