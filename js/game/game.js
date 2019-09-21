@@ -304,7 +304,7 @@ function resetGame() {
 	}
 	if (typeof (game.vehicle) != 'undefined') scene.remove(game.vehicle);
 	game.hasShield = false;
-	game.energyDecayPerFrame = 0.0020;
+	game.energyDecayPerFrame = 0.0022;
 	game.energyDecayIncrPerLevel = 0.00040;
 	game.level = 1;
 	game.energy = 100;
@@ -318,7 +318,7 @@ function resetGame() {
 	game.bonusLastSpawn = 0;
 	game.enemiesLastSpawn = 0;
 	game.speedLastUpdate = 0;
-	game.distanceForBonusesSpawn = 2;
+	game.distanceForBonusesSpawn = 3;
 	game.distanceForEnemiesSpawn = 2;
 	game.distanceForSpeedUpdate = 2;
 	game.distance = 0;
