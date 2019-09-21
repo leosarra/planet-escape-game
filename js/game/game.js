@@ -3,6 +3,7 @@ var SHADOW_POS = 400;
 var FAR_PLANE = 10000;
 var NEAR_PLANE = 1;
 var SHADOW_MAP_SIZE = 2048;
+var FIXED_DELTA_VALUE = 16;
 var gui;
 var enemyMeshStorage;
 var audio, audioListener, scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH, renderer, container;
@@ -47,7 +48,7 @@ var options = {
 	energyDecayPerFrame: -1,
 	energyDecayIncrPerLevel: -1,
 	noShieldCost: false,
-	fixedDeltaTime: -1,
+	fixedDeltaFramesTime: true,
 };
 
 function initScene() {
@@ -277,7 +278,7 @@ function initDatGUI() {
 		resetGame();
 	});
 	var debug = gui.addFolder("Debug");
-	debug.add(options, 'fixedDeltaTime');
+	debug.add(options, 'fixedDeltaFramesTime');
 	var perfFolder = gui.addFolder("Performance");
 	var perfLi = document.createElement("li");
 	stats.domElement.height = '48px';
@@ -658,7 +659,7 @@ function loop() {
 	newTime = new Date().getTime();
 	deltaTime = newTime - oldTime;
 	if (deltaTime > 1000) deltaTime = 1;
-	if (options.fixedDeltaTime!=-1 && options.fixedDeltaTime>0) deltaTime = options.fixedDeltaTime;
+	if (options.fixedDeltaFramesTime) deltaTime = FIXED_DELTA_VALUE;
 	game.deltaTime = deltaTime;
 	oldTime = newTime;
 	var meshesReady = enemyMeshStorage.isReady();
