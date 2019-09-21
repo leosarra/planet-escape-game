@@ -104,7 +104,7 @@ EnemiesHolder.prototype.animateEnemies = function () {
     enemy.mesh.position.y = -650 + Math.sin(enemy.angle) * enemy.distance;
     enemy.mesh.position.x = Math.cos(enemy.angle) * enemy.distance;
     if (enemy.type == 0) {
-      enemy.propeller.rotation.x = enemy.propeller.rotation.x + 0.2 * deltaTime;
+      enemy.propeller.rotation.x = enemy.propeller.rotation.x + 0.7 * deltaTime;
     } else if (enemy.type == 1) {
       enemy.mesh.rotation.z += Math.random() * .0015 * game.deltaTime;
       enemy.mesh.rotation.y += Math.random() * .0015 * game.deltaTime;
