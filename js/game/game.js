@@ -501,7 +501,7 @@ function createVehicle(vehicleType) {
 					game.vehicle = object;
 					scene.add(object);
 					lock = false;
-					game.vehicle.scale.set(.15, .15, .15);
+					game.vehicle.scale.set(.05, .05, .05);
 					game.vehicle.position.y = 150;
 					game.vehicle.rotation.y = 1.5;
 					game.vehicle.traverse(function (child) {
