@@ -315,7 +315,7 @@ function resetGame() {
 	game.baseHeigth = 100;
 	game.speedIncrement = .0000023;
 	game.levelSpeedIncrement = .000040;
-	game.coinLastSpawn = 0;
+	game.bonusLastSpawn = 0;
 	game.enemiesLastSpawn = 0;
 	game.speedLastUpdate = 0;
 	game.distanceForBonusesSpawn = 2;
@@ -621,7 +621,6 @@ function handleEnergy(deltaTime) {
 	var energyMinus = game.energyDecayPerFrame * deltaTime * game.discountEnergyCost;
 	if (game.level > 1) energyMinus += game.level * game.energyDecayIncrPerLevel;
 	if (game.hasShield) energyMinus += game.shieldActiveCost;
-	console.log(energyMinus, game.level, game.energyDecayIncrPerLevel);
 	game.energy = game.energy - energyMinus;
 	if (game.energy <= 0) {
 		game.energy = 0;
@@ -684,8 +683,8 @@ function loop() {
 			terrainIsChanging = true;
 
 		}
-		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.coinLastSpawn)) {
-			game.coinLastSpawn = Math.floor(game.distance);
+		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.bonusLastSpawn)) {
+			game.bonusLastSpawn = Math.floor(game.distance);
 			bonusHolder.spawnBonuses();
 		}
 
