@@ -250,7 +250,6 @@ function initDatGUI() {
 	gui = new dat.GUI({ width: 280 });
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
 	gui.add(options, 'vehicle', { '- Spaceship1': 0, '- Spaceship2': 1, '- Spaceship3': 2, '- TARDIS': 3 });
-	gui.add(options, 'paused');
 	gui.add(options, "audio").onChange(function () {
 		if (options.audio) {
 			audioListener = new THREE.AudioListener();
@@ -263,6 +262,7 @@ function initDatGUI() {
 			audioStarted = false;
 		}
 	});
+	gui.add(options, 'paused');
 	gui.add(options, 'reset');
 	var difficulty = gui.addFolder("Difficulty customization");
 	difficulty.add(options, 'speedIncrOverTime');
