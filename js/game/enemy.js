@@ -110,15 +110,15 @@ EnemiesHolder.prototype.animateEnemies = function () {
       enemy.mesh.rotation.y += .0010 * game.deltaTime;
       if (enemy.miniAsteroid1 != undefined) {
         enemy.miniAsteroid1.rotation.y += .0015 * game.deltaTime;
-        enemy.miniAsteroid1.rotation.z += .0015 * game.deltaTime;
+        enemy.miniAsteroid1.rotation.x += .0015 * game.deltaTime;
       }
       if (enemy.miniAsteroid2 != undefined) {
         enemy.miniAsteroid2.rotation.y += .0025 * game.deltaTime;
-        enemy.miniAsteroid2.rotation.z += .0025 * game.deltaTime;
+        enemy.miniAsteroid2.rotation.x += .0025 * game.deltaTime;
       }
       if (enemy.miniAsteroid3 != undefined) {
         enemy.miniAsteroid3.rotation.y += .0015 * game.deltaTime;
-        enemy.miniAsteroid3.rotation.z += .0015 * game.deltaTime;
+        enemy.miniAsteroid3.rotation.x += .0015 * game.deltaTime;
       }
     } else if (enemy.type == 2) {
       enemy.sateliteDisc.rotation.x += 0.035;
