@@ -13,7 +13,7 @@ Instead, if the animations don't depend on the delta time they will be extremely
 **You may want to change this option depending on the machine you are playing on**.
 
 ## How to play
-To play the game you may use the following [link](https://sapienzainteractivegraphicscourse.github.io/finalproject-planet_escape/).<br/><br/>
+To play the game you may use the following [link](https://sapienzainteractivegraphicscourse.github.io/finalproject-planet_escape/) (Chromium-based browser are recommended in order to obtain better performance).<br/><br/>
 If you want to play it locally you need to use a server to deliver the files and prevent CORS errors.<br/>
 Linux users may use the provided "start_server.rc" script that will automatically start a server on "127.0.0.1:8000".<br/>
 Otherwise you can put in windows/MacOS terminal the following command:
