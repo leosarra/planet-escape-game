@@ -366,7 +366,9 @@ function handleMouseMove(event) {
 
 function updateVehicle() {
 	if (game.gameOver || game.vehicle == undefined) return;
-	var targetY = normalize(mousePos.y, -.75, .75, 75, 250);
+	var maxY = 250;
+	if (vehicleType == 3) maxY = 242;
+	var targetY = normalize(mousePos.y, -.75, .75, 75, maxY);
 	var targetX = normalize(mousePos.x, -1, 1, -150, 150);
 	game.vehicle.position.y += (targetY - game.vehicle.position.y) * game.vehicleAdjustmentPositionSpeed * deltaTime;
 	game.vehicle.position.x += (targetX - game.vehicle.position.x) * game.vehicleAdjustmentPositionSpeed * deltaTime;
