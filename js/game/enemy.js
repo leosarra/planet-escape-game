@@ -106,19 +106,19 @@ EnemiesHolder.prototype.animateEnemies = function () {
     if (enemy.type == 0) {
       enemy.propeller.rotation.x = enemy.propeller.rotation.x + 0.7 * deltaTime;
     } else if (enemy.type == 1) {
-      enemy.mesh.rotation.z += Math.random() * .0015 * game.deltaTime;
-      enemy.mesh.rotation.y += Math.random() * .0015 * game.deltaTime;
+      enemy.mesh.rotation.z += .0010 * game.deltaTime;
+      enemy.mesh.rotation.y += .0010 * game.deltaTime;
       if (enemy.miniAsteroid1 != undefined) {
-        enemy.miniAsteroid1.rotation.y += Math.random() * .0025 * game.deltaTime;
-        enemy.miniAsteroid1.rotation.z += Math.random() * .0025 * game.deltaTime;
+        enemy.miniAsteroid1.rotation.y += .0015 * game.deltaTime;
+        enemy.miniAsteroid1.rotation.z += .0015 * game.deltaTime;
       }
       if (enemy.miniAsteroid2 != undefined) {
-        enemy.miniAsteroid2.rotation.y += Math.random() * .0035 * game.deltaTime;
-        enemy.miniAsteroid2.rotation.z += Math.random() * .0035 * game.deltaTime;
+        enemy.miniAsteroid2.rotation.y += .0025 * game.deltaTime;
+        enemy.miniAsteroid2.rotation.z += .0025 * game.deltaTime;
       }
       if (enemy.miniAsteroid3 != undefined) {
-        enemy.miniAsteroid3.rotation.y += Math.random() * .0015 * game.deltaTime;
-        enemy.miniAsteroid3.rotation.z += Math.random() * .0015 * game.deltaTime;
+        enemy.miniAsteroid3.rotation.y += .0015 * game.deltaTime;
+        enemy.miniAsteroid3.rotation.z += .0015 * game.deltaTime;
       }
     } else if (enemy.type == 2) {
       enemy.sateliteDisc.rotation.x += 0.035;
