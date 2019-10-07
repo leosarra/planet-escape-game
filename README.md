@@ -7,7 +7,7 @@ The goal is to dodge/destroy the enemies that you, as a spaceship, will encounte
 Full report can be found [here](doc/report.pdf)
 
 ## How to play
-To play the game you may use the following [link](https://sapienzainteractivegraphicscourse.github.io/finalproject-planet_escape/) (Chromium-based browser are recommended in order to obtain better performance).<br/><br/>
+To play the game you may use the following [link](https://lithiumsr.github.io/planet-escape-game/) (Chromium-based browser are recommended in order to obtain better performance).<br/><br/>
 If you want to play it locally you need to use a server to deliver the files and prevent CORS errors.<br/>
 Linux users may use the provided "start_server.rc" script that will automatically start a server on "127.0.0.1:8000".<br/>
 Otherwise you can put in windows/MacOS terminal the following command:
