@@ -264,20 +264,19 @@ function initDatGUI() {
 	});
 	gui.add(options, 'paused');
 	gui.add(options, 'reset');
-	var difficulty = gui.addFolder("Difficulty customization");
-	difficulty.add(options, 'speedIncrOverTime');
-	difficulty.add(options, 'speedIncrPerLevel');
-	difficulty.add(options, 'energyDecayPerFrame')
-	difficulty.add(options, 'energyDecayIncrPerLevel');
-	difficulty.add(options, 'noFireCost').onChange(function () {
-		removeShield();
-		resetGame();
-	});
-	difficulty.add(options, 'noShieldCost').onChange(function () {
-		removeShield();
-		resetGame();
-	});
 	var debug = gui.addFolder("Debug");
+	debug.add(options, 'speedIncrOverTime');
+	debug.add(options, 'speedIncrPerLevel');
+	debug.add(options, 'energyDecayPerFrame')
+	debug.add(options, 'energyDecayIncrPerLevel');
+	debug.add(options, 'noFireCost').onChange(function () {
+		removeShield();
+		resetGame();
+	});
+	debug.add(options, 'noShieldCost').onChange(function () {
+		removeShield();
+		resetGame();
+	});
 	debug.add(options, 'fixedDeltaFramesTime');
 	var perfFolder = gui.addFolder("Performance");
 	var perfLi = document.createElement("li");
