@@ -6,12 +6,6 @@ The goal is to dodge/destroy the enemies that you, as a spaceship, will encounte
 
 Full report can be found [here](doc/report.pdf)
 
-## Before playing...
-The game comes with a checkbox in the in-game "Debug menu" to enable or disable dynamic animations whose behavior depends on the delta time between rendered frames, these dynamic animations are **disabled by default**.<br/>
-Enabling dynamic animations ensures a smooth game even in case the client's performance fluctuates, on another end animations' quality may drop drastically on low-end machines. The game speed may also be influenced and so the difficulty.<br/>
-Instead, if the animations don't depend on the delta time they will be extremely smooth but the game may be subject to slowdowns on less powerful machines.<br/>
-**You may want to change this option depending on the machine you are playing on**.
-
 ## How to play
 To play the game you may use the following [link](https://sapienzainteractivegraphicscourse.github.io/finalproject-planet_escape/) (Chromium-based browser are recommended in order to obtain better performance).<br/><br/>
 If you want to play it locally you need to use a server to deliver the files and prevent CORS errors.<br/>
