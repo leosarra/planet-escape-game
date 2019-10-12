@@ -249,7 +249,7 @@ function initDatGUI() {
 	stats = new Stats();
 	gui = new dat.GUI({ width: 280 });
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
-	gui.add(options, 'vehicle', { '- Spaceship1': 0, '- Spaceship2': 1, '- Spaceship3': 2, '- TARDIS': 3 });
+	gui.add(options, 'vehicle', { 'Spaceship1': 0, 'Spaceship2': 1, 'Spaceship3': 2, 'TARDIS': 3 });
 	gui.add(options, "audio").onChange(function () {
 		if (options.audio) {
 			audioListener = new THREE.AudioListener();
