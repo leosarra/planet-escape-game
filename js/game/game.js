@@ -7,7 +7,7 @@ var FIXED_DELTA_VALUE = 16;
 var gui;
 var enemyMeshStorage;
 var audio, audioListener, scene, camera, fieldOfView, aspectRatio, nearPlane, farPlane, HEIGHT, WIDTH, renderer, container;
-var vehicleType = 0;
+var vehicleType = 4;
 var hemisphereLight, shadowLight;
 var terrain, sky;
 var newTime = new Date().getTime();
@@ -35,7 +35,7 @@ var Colors = {
 	black: 0x000000,
 };
 var options = {
-	vehicle: 0,
+	vehicle: 4,
 	audio: false,
 	paused: false,
 	noFireCost: false,
@@ -90,6 +90,7 @@ function addShield() {
 		return;
 	}
 	var geom = new THREE.IcosahedronGeometry(13, 0);
+	if (vehicleType == 4) geom = new THREE.IcosahedronGeometry(19, 0);
 	var mat = new THREE.MeshPhongMaterial({
 		color: Colors.pink,
 		shininess: 0,
@@ -177,7 +178,13 @@ function setupPlayerInputListener() {
 			else disableShieldImmunity(false);
 		} else if (e.which == 65 && !game.gameOver && game.vehicle != undefined && vehicleType != 3) {
 			fireProjectile();
-		} else if (e.which == 82 && game.showReplay) resetGame();
+		} else if (e.which == 82 && (game.showReplay || game.prizeShown)) {
+			if (game.showReplay) resetGame()
+			else if (game.prizeShown) {
+				options.paused = false;
+				game.prizeShown = false;
+			}
+		}
 	});
 }
 
@@ -189,6 +196,17 @@ function fireProjectile() {
 		pos1.x += 2.3;
 		var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
 		pos2.x += 2.3;
+		projectilesHolder.spawnParticles(pos1);
+		projectilesHolder.spawnParticles(pos2);
+	} else if (vehicleType == 4) {
+		var cannon1 = game.vehicle.getObjectByName("cannonRight");
+		var cannon2 = game.vehicle.getObjectByName("cannonLeft");
+		var pos1 = cannon1.getWorldPosition(game.vehicle.position.clone());
+		pos1.y += 4.5;
+		pos1.x += 7.3;
+		var pos2 = cannon2.getWorldPosition(game.vehicle.position.clone());
+		pos2.y += 4.5;
+		pos2.x += 7.3;
 		projectilesHolder.spawnParticles(pos1);
 		projectilesHolder.spawnParticles(pos2);
 	}
@@ -239,6 +257,8 @@ function initHTMLUi() {
 		scoreboard: document.getElementById('scoreboard'),
 		scoreboard_header: document.getElementById('scoreboard_header'),
 		loadingMessage: document.getElementById('loadingMessage'),
+		prizeMessage: document.getElementById('prizeMessage'),
+		resumeMessage: document.getElementById('resumeMessage')
 	}
 }
 function initDatGUI() {
@@ -249,7 +269,7 @@ function initDatGUI() {
 	stats = new Stats();
 	gui = new dat.GUI({ width: 280 });
 	[].forEach.call(stats.domElement.children, (child) => (child.style.display = ''));
-	gui.add(options, 'vehicle', { 'Spaceship1': 0, 'Spaceship2': 1, 'Spaceship3': 2, 'TARDIS': 3 });
+	gui.add(options, 'vehicle', { 'Spaceship1': 0, 'Spaceship2': 1, 'Spaceship3': 2, 'TARDIS': 3, "Camel": 4});
 	gui.add(options, "audio").onChange(function () {
 		if (options.audio) {
 			audioListener = new THREE.AudioListener();
@@ -336,6 +356,7 @@ function resetGame() {
 	game.gameOverVehicleSpeed = .002;
 	game.showReplay = false;
 	game.scoreAdded = false;
+	game.prizeShown = false;
 	game.vehicleAdjustmentPositionSpeed = 0.005;
 	game.vehicleAdjustmentRotationSpeedZ = 0.0008;
 	game.vehicleAdjustmentRotationSpeedX = 0.00001;
@@ -351,7 +372,6 @@ function resetGame() {
 		if (options.audio) sound.play();
 	}
 	if (typeof (ambientLight) != 'undefined') ambientLight.intensity = 0.4;
-
 }
 
 var mousePos = { x: 0, y: 0 };
@@ -361,7 +381,6 @@ function handleMouseMove(event) {
 	mousePos = { x: tx, y: ty };
 
 }
-
 
 function updateVehicle() {
 	if (game.gameOver || game.vehicle == undefined) return;
@@ -381,6 +400,38 @@ function updateVehicle() {
 		game.bubble.rotation.z = game.vehicle.rotation.z;
 		game.bubble.rotation.x = game.vehicle.rotation.x;
 	}
+    if (vehicleType == 4) {
+        var tail = game.vehicle.getObjectByName("tail");
+        var leftFrontLeg = game.vehicle.getObjectByName("leftFrontLeg");
+        var rightFrontLeg = game.vehicle.getObjectByName("rightFrontLeg");
+        var leftBehindLeg = game.vehicle.getObjectByName("leftBehindLeg");
+        var rightBehindLeg = game.vehicle.getObjectByName("rightBehindLeg");
+
+        if (tail) {
+            tail.rotation.z += 0.01 * deltaTime;
+        }
+
+        var legAngleX = Math.sin(newTime * 0.003) * 0.15;
+        var legAngleZ = Math.sin(newTime * 0.003) * 0.05;
+
+        if (leftFrontLeg) {
+            leftFrontLeg.rotation.x = legAngleX;
+            leftFrontLeg.rotation.z = legAngleZ;
+        }
+        if (rightBehindLeg) {
+            rightBehindLeg.rotation.x = legAngleX;
+            rightBehindLeg.rotation.z = -legAngleZ;
+        }
+        
+        if (rightFrontLeg) {
+            rightFrontLeg.rotation.x = -legAngleX;
+            rightFrontLeg.rotation.z = -legAngleZ;
+        }
+        if (leftBehindLeg) {
+            leftBehindLeg.rotation.x = -legAngleX;
+            leftBehindLeg.rotation.z = legAngleZ;
+        }
+    }
 }
 
 function normalize(v, vmin, vmax, tmin, tmax) {
@@ -423,7 +474,6 @@ function initLights() {
 	scene.add(hemisphereLight);
 	scene.add(ambientLight);
 }
-
 
 function initProjectilesHolder() {
 	projectilesHolder = new ProjectilesHolder(10);
@@ -490,6 +540,13 @@ function createVehicle(vehicleType) {
 		game.vehicleAdjustmentRotationSpeedX = 0.005;
 		game.discountEnergyCost = 0.77;
 		game.shieldActivationCost = 0.15;
+	}
+	else if (vehicleType == 4) {
+		file = "camel";
+		game.vehicleAdjustmentPositionSpeed = 0.004;
+		game.vehicleAdjustmentRotationSpeedZ = 0.0008;
+		game.vehicleAdjustmentRotationSpeedX = 0.00001;
+		game.discountEnergyCost = 1;
 	}
 	if (vehicleType == 3) {
 		var mtlLoader = new THREE.MTLLoader();
@@ -596,10 +653,15 @@ function updateUI() {
 		htmlUI.scoreboard_header.style.display = "none";
 		htmlUI.scoreboard.style.display = "none";
 	}
+	if (game.prizeShown) {
+		htmlUI.prizeMessage.style.display = 'block';
+		htmlUI.resumeMessage.style.display =  'block';
+	} else {
+		htmlUI.prizeMessage.style.display = 'none';
+		htmlUI.resumeMessage.style.display =  'none';
+	}
 	if (game.showReplay && game.scoreAdded) htmlUI.scoreMessage.style.display = "none";
-
 }
-
 
 function handleTerrainRotation(deltaTime) {
 	terrain.mesh.rotation.z += game.baseSpeed * deltaTime;
@@ -654,7 +716,6 @@ function handleGameStatus(deltaTime) {
 	}
 }
 
-
 function loop() {
 	stats.begin();
 	newTime = new Date().getTime();
@@ -677,12 +738,18 @@ function loop() {
 		if (game.distanceSinceStartLevel > (game.levelDistance + 5 * game.level)) {
 			game.distanceSinceStartLevel = 0;
 			game.level = game.level + 1;
+
+			if (game.level == 4 && !game.prizeShown) {
+				options.paused = true;
+				game.prizeShown = true;
+				htmlUI.prizeMessage.style.display = 'block';
+			}
+
 			game.speedLastUpdate = Math.floor(game.distance);
 			game.baseSpeed = 0;
 			game.targetBaseSpeed = game.vehicleInitialSpeed + game.levelSpeedIncrement * game.level;
 			levelChanged = new Date().getTime();
 			terrainIsChanging = true;
-
 		}
 		if ((meshesReady && !game.firstMeshesSpawned && game.vehicle != undefined) || (Math.floor(game.distance) % game.distanceForBonusesSpawn == 0 && game.vehicle != undefined && Math.floor(game.distance) > game.bonusLastSpawn)) {
 			game.bonusLastSpawn = Math.floor(game.distance);

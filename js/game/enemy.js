@@ -160,6 +160,8 @@ EnemiesHolder.prototype.checkCollisions = function () {
     var enemy = this.enemiesInUse[i];
     if (this.projectilesHolder.checkCollisions(enemy.mesh.position)) {
       this.particlesHolder.spawnParticles(false, 0, enemy.mesh.position, 5, Colors.green, 3);
+      this.game.energy += 9;
+      if (this.game.energy > 100) this.game.energy = 100;
       this.enemiesPool.unshift(this.enemiesInUse.splice(i, 1)[0]);
       this.mesh.remove(enemy.mesh);
       i--;
